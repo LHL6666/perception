@@ -13,12 +13,18 @@
 
 
 ## **2. 软件效果展示**  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/哨岗视觉识别.gif" width="80%" alt="" /></p>   
-<p align="center">哨岗视觉识别</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/检测.gif" width="80%" alt="" /></p>   
-<p align="center">机器人目标检测</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/位姿识别.gif" width="80%" alt="" /></p>   
-<p align="center">基于先验信息和模板匹配的位姿识别</p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/哨岗场地分区.gif" width="80%" alt="" /></p>   
+<p align="center">哨岗场地分区</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
+<p align="center">哨岗识别计算坐标</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
+<p align="center">机器人及其装甲板识别</p>
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
+<p align="center">tensorRT加持的yolov4-tiny测试</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40</p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center">7.8米识别机器人装甲板model_size(512, 418) FPS30</p>   
 
 ## **3. 依赖工具，软、硬件环境**
 ####**软件部分：**   
@@ -46,7 +52,7 @@ tensorRT: jetpack 4.4刷机时安装即可
 
 # **4. 编译、安装方式**
 ### **linux下**：
-① 克隆代码至本地仓库：git clone https://github.com/MengXiangBo/ICRA2020_RM_LHL_Perception.git Wust_Perception   
+① 克隆代码至本地仓库：git clone https://github.com/LHL6666/perception.git Wust_Perception   
 ② 添加该工程路径到python的搜索路径，使python解释器能够找到models,runs,utils文件夹下的python文件，或者直接将这三个文件夹复制到
 python site-packages里面，例如~/.local/lib/python3.6/site-packages/
 ③ 修改Innocent_Bird.py文件，更改模型搜索路径，更改摄像头的编号后，打开终端cd到该工程根目录下面，直接运行 python3 Innocent_Bird.py     
@@ -65,21 +71,21 @@ python site-packages里面，例如~/.local/lib/python3.6/site-packages/
 其中，我们将YOLOv2中的backbone网络——Darknet19替换为由我们自主设计的轻量级网络Darknet_tiny，该网络在ImageNet数据集上进行预训练，在val上获得
 top1精度63.5和top5精度85.06。为了提高网络的性能，同时不引入过多的计算量，在detection head部分添加了SPP模块。
 
-## 数据集
-本项目的数据集由我们自主采集，使用相机在不同视角、不同距离、不同姿态下采集。训练集共有2400张图片，目前尚未开源数据集。
+## 数据集  
+yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo格式的标签，不过在该工程中提供了voc转yolo格式的Convert_xml_to_txt.py文件。
+① 哨岗搭载的模型训练用的数据集一共250张左右，其中验证数据集50左右，在小米笔记本pro上(MX150入门显卡)200epochs, batch_size 16, train_size和test_size为256时训练时间仅仅为0.65个小时，mAP@0.5接近1，可在下面链接下载数据集  
+② 机器人搭载的模型训练用的数据集一共1000张左右，其中包含了验证数据集200张左右，在小米笔记本pro上300 epochs, batch_size 8, train_size和test_size为480时训练时间6.8个小时左右，在jetson agx xavier上 300 epochs, batch_size 128, train_size和test_size为480时训练时间仅仅为2.7个小时左右， 由于该数据集比较大，不好上传暂不开源。（实际结果可能会有偏差，非严格测试）  
 
-## 模型
-已训练好的模型请使用下面的百度网盘链接下载（14MB左右）：   
+## 模型  
+
+模型大小为14MB左右，已经很小  
 
 ### 哨岗检测模型
 链接：https://pan.baidu.com/s/15dIvgZN781N9q14gnpFfZw      
-
 提取码：wifw       
-
 
 ### 机载检测模型
 链接：https://pan.baidu.com/s/1HHIdqMT0tnO45W5gij9R0A      
-
 提取码：5twr    
 
 ### yolov5s权重
