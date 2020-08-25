@@ -94,15 +94,123 @@ python site-packages里面，例如~/.local/lib/python3.6/site-packages/
 ⑦ 启动rosmaster, 运行image_capture、image_after、LHL_Car_Str_Detection和car_armor_position_subscriber分别观察窗口的输出情况和位置信息等  
   指令为：rosrun my_roborts_camera + 以上可执行文件(eg: image_capture)
 
-# **5. 软件使用说明** 
-## ***A. 深度学习目标检测算法***   
+# **5. 文件目录结构及文件用途说明**   
+ ```
+Innocent_Bird-master.
+├── models
+│   ├── common.py // 包含了yolov5s、yolov5m、yolov5l和yolov5x模型通用的模块，还包括了SPP等结构
+│   ├── export.py // 将训练好的.pt模型转换成onnx和TorchScript格式，减少由于训练模型时保存的设备和时间参数等，增加通用性以及可用于tensorRT加速处理
+│   ├── experimental.py // 包含实验模块还有加载训练好的模型函数，比较新颖的MixConv2d混合神经网络模块都在里面有体现
+│   └── yolo.py  //模型文件，包含了用来解析输入的yolov5s.yaml参数网络的功能
+│
+├── utils
+│   ├── activations.py
+│   ├── datasets.py
+│   ├── googles_utils.py
+│   ├── torch_utils.py
+│   └── utils.py
+│ 
+├── Camera_Calibration.py // 矫正畸变后的图像，用来收集数据集使用
+├── Convert_xml_to_txt.py // voc数据集转yolo数据集
+├── Innocent_Bird.py // 哨岗检测文件
+├── test.py // 
+├── train.py // 训练用的文件
+└── requirements.txt // 环境依赖说明
+```
 
+# **6. 软件使用说明** 
+## ***A. 深度学习目标检测算法框架修改***   
+yolov5s.yaml:只需要修改depth_multiple和width_multiple参数即可修改网络模型的结构，其中depth_multiple深度神经因子参数调节的是非功能层(对conv,spp,Focus等层不起作用)，如瓶颈层BottleneckCSP层，它控制的是神经网络的深度，width_multiple参数修改了卷积层数，0.5即指卷积层数目减少到原来的一半。  
+增加一层先验框层anchors，使得更准确地检测小物体 
+对于骨干网络backbone，下采样使得特征图从大到小，深度逐渐加深
+head头部层升维再降维，更新为PN net结构
+每一层的输入都是上一层的输出，所以为了方便修改网络结构修改网络结构，就提取出了depth_multiple和width_multiple两个参数，调整number的个数可以调得更好的模型，甚至使得BottleneckCSP层中再包含多个BottleneckCSP层  
+SElayer对上一层的特征图深度进行加权处理
+####修改前网络结构:  
+```
+                 from  n    params  module                                  arguments                     
+  0                -1  1      3520  models.common.Focus                     [3, 32, 3]                    
+  1                -1  1     18560  models.common.Conv                      [32, 64, 3, 2]                
+  2                -1  1     19904  models.common.BottleneckCSP             [64, 64, 1]                   
+  3                -1  1     73984  models.common.Conv                      [64, 128, 3, 2]               
+  4                -1  1    161152  models.common.BottleneckCSP             [128, 128, 3]                 
+  5                -1  1    295424  models.common.Conv                      [128, 256, 3, 2]              
+  6                -1  1    641792  models.common.BottleneckCSP             [256, 256, 3]                 
+  7                -1  1   1180672  models.common.Conv                      [256, 512, 3, 2]              
+  8                -1  1    656896  models.common.SPP                       [512, 512, [5, 9, 13]]        
+  9                -1  1   1248768  models.common.BottleneckCSP             [512, 512, 1, False]          
+ 10                -1  1    131584  models.common.Conv                      [512, 256, 1, 1]              
+ 11                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, 'nearest']          
+ 12           [-1, 6]  1         0  models.common.Concat                    [1]                           
+ 13                -1  1    378624  models.common.BottleneckCSP             [512, 256, 1, False]          
+ 14                -1  1     33024  models.common.Conv                      [256, 128, 1, 1]              
+ 15                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, 'nearest']          
+ 16           [-1, 4]  1         0  models.common.Concat                    [1]                           
+ 17                -1  1     95104  models.common.BottleneckCSP             [256, 128, 1, False]          
+ 18                -1  1    147712  models.common.Conv                      [128, 128, 3, 2]              
+ 19          [-1, 14]  1         0  models.common.Concat                    [1]                           
+ 20                -1  1    313088  models.common.BottleneckCSP             [256, 256, 1, False]          
+ 21                -1  1    590336  models.common.Conv                      [256, 256, 3, 2]              
+ 22          [-1, 10]  1         0  models.common.Concat                    [1]                           
+ 23                -1  1   1248768  models.common.BottleneckCSP             [512, 512, 1, False]          
+ 24      [17, 20, 23]  1     37758  Detect                                  [9, [[10, 13, 16, 30, 33, 23], [30, 61, 62, 45, 59, 119], [116, 90, 156, 198, 373, 326]], [128, 256, 512]]
+Model Summary: 191 layers, 7.27667e+06 parameters, 7.27667e+06 gradients
+```
+
+####增加SELayer加权处理后的网络结构: 
+```                 from  n    params  module                                  arguments                     
+  0                -1  1      3520  models.common.Focus                     [3, 32, 3]                    
+  1                -1  1     18560  models.common.Conv                      [32, 64, 3, 2]                
+  2                -1  1     19904  models.common.BottleneckCSP             [64, 64, 1]                   
+  3                -1  1     73984  models.common.Conv                      [64, 128, 3, 2]               
+  4                -1  1    161152  models.common.BottleneckCSP             [128, 128, 3]                 
+  5                -1  1      2048  models.common.SELayer                   [128, 16]                     
+  6                -1  1    295424  models.common.Conv                      [128, 256, 3, 2]              
+  7                -1  1    641792  models.common.BottleneckCSP             [256, 256, 3]                 
+  8                -1  1      8192  models.common.SELayer                   [256, 16]                     
+  9                -1  1   1180672  models.common.Conv                      [256, 512, 3, 2]              
+ 10                -1  1    656896  models.common.SPP                       [512, 512, [5, 9, 13]]        
+ 11                -1  1     32768  models.common.SELayer                   [512, 16]                     
+ 12                -1  1   1248768  models.common.BottleneckCSP             [512, 512, 1, False]          
+ 13                -1  1    131584  models.common.Conv                      [512, 256, 1, 1]              
+ 14                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, 'nearest']          
+ 15           [-1, 6]  1         0  models.common.Concat                    [1]                           
+ 16                -1  1    378624  models.common.BottleneckCSP             [512, 256, 1, False]          
+ 17                -1  1     33024  models.common.Conv                      [256, 128, 1, 1]              
+ 18                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, 'nearest']          
+ 19           [-1, 4]  1         0  models.common.Concat                    [1]                           
+ 20                -1  1     95104  models.common.BottleneckCSP             [256, 128, 1, False]          
+ 21                -1  1    147712  models.common.Conv                      [128, 128, 3, 2]              
+ 22          [-1, 14]  1         0  models.common.Concat                    [1]                           
+ 23                -1  1    345856  models.common.BottleneckCSP             [384, 256, 1, False]          
+ 24                -1  1    590336  models.common.Conv                      [256, 256, 3, 2]              
+ 25          [-1, 10]  1         0  models.common.Concat                    [1]                           
+ 26                -1  1   1379840  models.common.BottleneckCSP             [768, 512, 1, False]          
+ 27      [17, 20, 23]  1     21630  Detect                                  [9, [[10, 13, 16, 30, 33, 23], [30, 61, 62, 45, 59, 119], [116, 90, 156, 198, 373, 326]], [128, 128, 256]]
+Reversing anchor order
+Model Summary: 197 layers, 7.46739e+06 parameters, 7.46739e+06 gradients
+
+```
 
 ## 数据集  
 yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo格式的标签，不过在该工程中提供了voc转yolo格式的Convert_xml_to_txt.py文件。
 ① 哨岗搭载的模型训练用的数据集一共250张左右，其中验证数据集50左右，在小米笔记本pro上(MX150入门显卡)200epochs, batch_size 16, train_size和test_size为256时训练时间仅仅为0.65个小时，mAP@0.5接近1，可在下面链接下载数据集  
 ② 机器人搭载的模型训练用的数据集一共1000张左右，其中包含了验证数据集200张左右，在小米笔记本pro上300 epochs, batch_size 8, train_size和test_size为480时训练时间6.8个小时左右，在jetson agx xavier上 300 epochs, batch_size 128, train_size和test_size为480时训练时间仅仅为2.7个小时左右， 由于该数据集比较大，不好上传暂不开源。（实际结果可能会有偏差，非严格测试）  
-
+③ 训练数据集文件结构：  
+```
+.
+├── DataSet_V5
+│   ├── test // 测试数据集
+│   │   ├── images
+│   │   ├── labels
+│   ├── train // 
+│   │   ├── images // 训练数据集的图片
+│   │   ├── labels // 训练数据集的标签
+│   ├── valid // 
+│   │   ├── images // 验证数据集的图片
+│   │   ├── labels // 验证数据集的标签
+│   ├── data.yaml // classes的总数以及名称，训练测试数据集的路径配置
+```
 
 ## 模型  
 
@@ -124,29 +232,7 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 链接：https://pan.baidu.com/s/1fuAy0An9HTO2rey9KgZsZQ 
 提取码：oufy
 
-# **6. 文件目录结构及文件用途说明**   
- ```
-Innocent_Bird-master.
-├── models
-│   ├── common.py // 包含了yolov5s、yolov5m、yolov5l和yolov5x模型通用的模块，还包括了SPP等结构
-│   ├── export.py // 将训练好的.pt模型转换成onnx和TorchScript格式，减少由于训练模型时保存的设备和时间参数等，增加通用性以及可用于tensorRT加速处理
-│   ├── experimental.py // 包含实验模块还有加载训练好的模型函数，比较新颖的MixConv2d混合神经网络模块都在里面有体现
-│   └── yolo.py  //模型文件，包含了用来解析输入的yolov5s.yaml参数网络的功能
-│
-├── utils
-│   ├── activations.py
-│   ├── datasets.py
-│   ├── googles_utils.py
-│   ├── torch_utils.py
-│   └── utils.py
-│ 
-├── Camera_Calibration.py
-├── Convert_xml_to_txt.py
-├── Innocent_Bird.py // 
-├── test.py // 
-├── train.py // 
-└── requirements.txt // 
-```  
+  
 
 # **7. 原理介绍与理论支持分析**   
 ## 1. 机器人与装甲板识别及哨岗识别  
