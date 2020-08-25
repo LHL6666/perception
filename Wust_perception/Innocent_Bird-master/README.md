@@ -121,12 +121,13 @@ Innocent_Bird-master.
 # **6. 软件使用说明** 
 ## ***A. 深度学习目标检测算法框架修改***   
 修改的网络: ultralytics团队的"yolov5"框架   
-  yolov5s的网络结构和yolov4是基本相同的，网络结构每一层的输入都是上一层的输出，所以为了方便修改网络结构修改网络结构，就提取出了depth_multiple和width_multiple两个参数，这两个参数和网络层结构配置被放在models/yolov5s.yaml文件中，只需要修改depth_multiple和width_multiple参数即可修改网络模型的结构，其中depth_multiple深度神经因子参数调节的是非功能层(对conv,spp,Focus等层不起作用)，如瓶颈层BottleneckCSP层，它控制的是神经网络的深度，width_multiple参数修改了卷积层数，width_multiple=0.5即指卷积层数目减少到原来的一半。对于骨干网络backbone，下采样使得特征图从大到小，深度逐渐加深，对于头部结构head，可以看到头部层升维再降维变化，ultralytics团队更新代码采用了PN Net结构。  
+  yolov5s的网络结构和yolov4是基本相同的，网络结构每一层的输入都是上一层的输出，所以为了方便使用者修改网络结构，就提取出了depth_multiple和width_multiple两个参数，这两个参数和网络层结构配置被放在models/yolov5s.yaml文件中，只需要修改depth_multiple和width_multiple参数即可修改网络模型的结构。其中depth_multiple深度神经因子参数调节的是非功能层(对conv,spp,Focus等层不起作用)，如瓶颈层BottleneckCSP，它控制的是神经网络的深度，width_multiple参数修改了卷积层数，width_multiple=0.5即指卷积层数目减少到原来默认值的一半。对于骨干网络backbone，下采样使得特征图从大到小，深度逐渐加深，对于头部结构head，可以看到头部层升维再降维变化，ultralytics团队更新代码后采用了PN Net结构。  
   分析推测：   
-① 增加一层先验框层anchors为[5,6, 7,9, 12,10]，应该能够更准确地检测小物体    
+① 增加一层先验框anchors为[5,6, 7,9, 12,10]，应该能够更准确地检测小物体    
 ② 调整yolov5s.yaml参数number的个数应该能调出更好的模型，甚至使得BottleneckCSP层中再包含多个BottleneckCSP层，但是模型可能更大推理速度变慢    
-③ 在每次上采样瓶颈层处理后增加SElayer层对上一层的特征图深度进行加权处理，对于检测类型的任务应该能够加快收敛，训练速度和检测精度都应该有所提升   
-  最后，我尝试了增加anchors和SELayer层，anchors在修改之后在我们场地测试时误判率有所增加，所以yolov5s.yaml中我将新增的anchors注释了，后面了解到yolov5中先验框的大小会在训练过程自动调节，已经相当优秀了  
+③ 在上采样瓶颈层处理后尝试增加SElayer层对上一层的特征图深度进行加权处理，对于检测类型的任务应该能够加快收敛，训练速度和检测精度都应该有所提升   
+  最后，我尝试了增加anchors和SELayer层，anchors在修改之后在我们场地测试时发现对远处的装甲板确实能够标记的更准确了，但是误判率却又有所增加，所以yolov5s.yaml中我将新增的anchors注释了，后面才了解到yolov5中先验框的大小会在训练过程自动调节，已经适配地相当优秀了  
+
 ####修改前网络结构:  
 ```
                  from  n    params  module                                  arguments                     
@@ -158,7 +159,7 @@ Innocent_Bird-master.
 Model Summary: 191 layers, 7.27667e+06 parameters, 7.27667e+06 gradients
 ```
 
-####增加SELayer加权处理后的网络结构: 
+####增加SELayer加权处理后的网络结构:  
 ```                 from  n    params  module                                  arguments                     
   0                -1  1      3520  models.common.Focus                     [3, 32, 3]                    
   1                -1  1     18560  models.common.Conv                      [32, 64, 3, 2]                
@@ -215,7 +216,7 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 
 ## 模型  
 
-模型大小为14MB左右，已经很小  
+模型大小仅仅14MB左右，已经很小  
 
 ### 哨岗检测模型
 链接：https://pan.baidu.com/s/15dIvgZN781N9q14gnpFfZw      
