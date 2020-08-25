@@ -1,26 +1,25 @@
-## 该项目是ICRA2020 AI Challenge ChongShi战队的感知功能代码说明 --version1.0.1
+## copyright@LHL of Wust
 ## **1. 软件功能介绍**  
 感知功能实现了敌我机器人识别、敌方机器人装甲板识别、敌方机器人尾灯姿态识别、哨岗识别敌方机器人及其装甲板、哨岗识别敌方机器人位置坐标。
 #### **机器人和装甲板识别算法框架：**    
 使用了深度学习目标检测算法：一共尝试了**yolov4, yolov4-tiny, "yolov5", AlexeyAB发行的tensorRT加速版yolov4-tiny**框架，其中tensorRT加持的yolov4-tiny算法在我们的机载PC（仅为ARM处理器）上识别速度能够高达近乎150帧，能够在三米内稳定识别装甲板和尾灯，7米之内稳定识别机器人（有一定的防遮挡能力），
 但是由于对装甲板的识别距离太近，限制了日后决策组发展，因此最后采取折中的方案，最终在哨岗视觉和机器人视觉处理上使用了来自ultralytics公司的"yolov5"框架，该框架在调节模型大小和优化器等参数后取得较好的效果，能够在六米内稳定识别装甲板和尾灯，识别机器人的准确度也很高 
 主要功能对比如下（以最后模型为准）：   
-______________________________________________________________________________________________________   
-#####│***************************ultralytics yolov5： *******   │ *******  AlexeyAB版 yolov4-tiny       │ 
 
-6米距离识别机器人:  ------------------- 94%  ----------------------------------   80% -------------------------        
-6米距离识别装甲板:  ------------------- 72%  ----------------------------------   NO  --------------------------    
-稳定识别时的 FPS ： ------- 30~85fps(size最大最小) ---------------50~150fps
+|                |ultralytics yolov5 |AlexeyAB版 yolov4-tiny                        |
+|----------------|-------------------------------|-----------------------------|
+|6米距离识别机器人  |  94%   |  80%  |
+|6米距离识别装甲板  |  72%   |  NO   |
+|稳定识别时的FPS(size不同)  |30-85   |   50-150|
 
 
 ## **2. 软件效果展示**  
-<p align="center"><img style="display: block; margin: 0 auto;" src="image/哨岗视觉识别.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/哨岗视觉识别.gif" width="80%" alt="" /></p>   
 <p align="center">哨岗视觉识别</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="image/检测.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/检测.gif" width="80%" alt="" /></p>   
 <p align="center">机器人目标检测</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="image/位姿识别.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/位姿识别.gif" width="80%" alt="" /></p>   
 <p align="center">基于先验信息和模板匹配的位姿识别</p>   
-![image](https://github.com/ZhengYaWei1992/ZWProgressView/blob/master/Untitled3.gif)
 
 ## **3. 依赖工具，软、硬件环境**
 ####**软件部分：**   
