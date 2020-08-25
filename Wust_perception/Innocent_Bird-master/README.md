@@ -28,20 +28,25 @@
 
 ## **3. 依赖工具，软、硬件环境**
 ####**软件部分：**   
-系统版本：Ubuntu18.04    
-机载平台：Jetpack 4.4，tensorRT, PyTorch, TensorFlow, 具体版本要求如下：
 
+系统版本：Ubuntu18.04    
+
+机载平台:  
 CUDA 10.2   
-PyTorch1.6   
+python3.6
+PyTorch1.6  
+OpenCV3.4.x
+Jetpack 4.4
 PyYAML>=5.3     
-scipy>=1.4.1    
+scipy>=1.4.1  
 tqdm>=4.41.0    
 numpy>=1.18.5   
 TensorFlow>=2.2   
 matplotlib>=3.2.2     
 torchvision>=0.7.0      
 OpenCV-python>=4.1.2    
-tensorRT: jetpack 4.4刷机时安装即可    
+tensorRT: jetpack 4.4刷机时安装即可 
+
 
 ####**硬件部分：**   
 机载平台： Jetson AGX Xavier  
@@ -51,30 +56,31 @@ tensorRT: jetpack 4.4刷机时安装即可
 
 
 # **4. 编译、安装方式**
-### **linux下**：
+
+## **对于哨岗的测试**：  
+### **linux下**：  
 ① 克隆代码至本地仓库：git clone https://github.com/LHL6666/perception.git Wust_Perception   
 ② 添加该工程下Innocent_Bird-master项目路径到python的搜索路径，使python解释器能够找到models,runs,utils文件夹下的python文件，或者直接将这三个文件夹复制到
 python site-packages里面，例如~/.local/lib/python3.6/site-packages/
-③ 修改Innocent_Bird.py文件，更改模型搜索路径，更改摄像头的编号后，打开终端cd到该工程根目录下面，直接运行 python3 Innocent_Bird.py     
-### **window10下**：
+③ 修改Innocent_Bird.py文件，更改模型搜索路径，更改摄像头的编号后，打开终端cd到Innocent_Bird-master工程的根目录下面，直接运行 python3 Innocent_Bird.py     
+### **window10下**：  
 ① 下载工程：     
-② 使用pycharm等软件打开工程文件    
+② 使用pycharm等软件打开Innocent_Bird-master工程文件    
 ③ 直接运行Innocent_Bird.py      
+
+## **对于机载视觉功能包测试**：
+### **linux下**：  
+① 将下载好的LHL_RoboRTS/src/my_roborts_camera功能包
 
 # **5. 软件使用说明** 
 ## ***A. 深度学习目标检测算法***   
-深度学习目标检测算法用来实现敌方机器人的识别以及哨岗识别，使用python语言编写，算法代码位于RobDet文件夹下。本项目共提供两组模型：
 
-- 部署在机器人平台的检测模型——TinyYOLOv3，该模型是由我们组对Darknet版本的TinyYOLOv3的PyTorch复现，添加了SPP模块。
-- 部署在哨岗平台的检测模型——SlimYOLOv2，该模型是由我们组对Darknet版本的YOLOv2的PyTorch复现，并且做了轻量化处理和添加SPP模块。
-
-其中，我们将YOLOv2中的backbone网络——Darknet19替换为由我们自主设计的轻量级网络Darknet_tiny，该网络在ImageNet数据集上进行预训练，在val上获得
-top1精度63.5和top5精度85.06。为了提高网络的性能，同时不引入过多的计算量，在detection head部分添加了SPP模块。
 
 ## 数据集  
 yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo格式的标签，不过在该工程中提供了voc转yolo格式的Convert_xml_to_txt.py文件。
 ① 哨岗搭载的模型训练用的数据集一共250张左右，其中验证数据集50左右，在小米笔记本pro上(MX150入门显卡)200epochs, batch_size 16, train_size和test_size为256时训练时间仅仅为0.65个小时，mAP@0.5接近1，可在下面链接下载数据集  
 ② 机器人搭载的模型训练用的数据集一共1000张左右，其中包含了验证数据集200张左右，在小米笔记本pro上300 epochs, batch_size 8, train_size和test_size为480时训练时间6.8个小时左右，在jetson agx xavier上 300 epochs, batch_size 128, train_size和test_size为480时训练时间仅仅为2.7个小时左右， 由于该数据集比较大，不好上传暂不开源。（实际结果可能会有偏差，非严格测试）  
+
 
 ## 模型  
 
@@ -92,6 +98,9 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 链接: https://pan.baidu.com/s/1Ge1--weNoh_KgB2xFRRQ2A  	
 提取码: m0hl
 
+### 哨岗训练数据集
+链接：https://pan.baidu.com/s/1fuAy0An9HTO2rey9KgZsZQ 
+提取码：oufy
 
 # **6. 文件目录结构及文件用途说明**   
  ```
@@ -109,10 +118,12 @@ Innocent_Bird-master.
 │   ├── torch_utils.py
 │   └── utils.py
 │ 
-├── GIF
-├── PIC
-├── LICENSE // 开源协议
-└── Readme.md // 说明文件
+├── Camera_Calibration.py
+├── Convert_xml_to_txt.py
+├── Innocent_Bird.py // 开源协议
+├── test.py // 开源协议
+├── train.py // 开源协议
+└── requirements.txt // 环境
 ```  
 
 # **7. 原理介绍与理论支持分析**   
