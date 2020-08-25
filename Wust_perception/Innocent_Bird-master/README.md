@@ -74,10 +74,10 @@ python site-packages里面，例如~/.local/lib/python3.6/site-packages/
 ### **linux下**：  
 ① 将下载好的LHL_RoboRTS工作空间放到home下  
 ② 打开终端，切换路径到~/LHL_RoboRTS/下  
-③ catkin_make  
+③ catkin_make, 添加"source ~/LHL_RoboRTS/devel/setup.bash"到.bashrc文件中  
 ④ 进入到~/LHL_RoboRTS/src/my_roborts_camera/bin/下，给这里的每个文件添加可执行文件权限  
 ⑤ 可选 打开~/LHL_RoboRTS/src/my_roborts_camera/src/Python_package/image_capture.py文件，修改采用的摄像头编号，一般机载PC不用改  
-⑥ 打开~/LHL_RoboRTS/src/my_roborts_camera/src/Python_package/LHL_Car_Str_Detection.py文件，修改模型绝对路径，保存  
+⑥ 打开~/LHL_RoboRTS/src/my_roborts_camera/src/Python_package/LHL_Car_Str_Detection.py文件，修改模型绝对路径，保存之后直接退出即可  
 ⑦ 启动rosmaster, 运行image_capture、image_after、LHL_Car_Str_Detection和car_armor_position_subscriber分别观察窗口的输出情况和位置信息等  
   指令为：rosrun my_roborts_camera + 以上可执行文件
 
