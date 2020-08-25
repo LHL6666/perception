@@ -1,0 +1,29 @@
+uint8 car
+uint8 str
+uint8 armor
+
+uint8 red_car1
+uint8 red_car2
+uint8 blue_car1
+uint8 blue_car2
+uint8 is_car_tail
+
+float32 red_top_left_x
+float32 red_top_left_y
+float32 red_bottom_right_x
+float32 red_bottom_right_y
+
+float32 blue_top_left_x
+float32 blue_top_left_y
+float32 blue_bottom_right_x
+float32 blue_bottom_right_y
+
+float32 armor_top_left_x
+float32 armor_top_left_y
+float32 armor_bottom_right_x
+float32 armor_bottom_right_y
+
+float32 temp_top_left_x
+float32 temp_top_left_y
+float32 temp_bottom_right_x
+float32 temp_bottom_right_y

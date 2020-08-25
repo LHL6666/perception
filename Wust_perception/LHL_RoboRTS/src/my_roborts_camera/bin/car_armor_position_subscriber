@@ -1,0 +1,6 @@
+#! /usr/bin/python2.7
+
+import Python_package.car_armor_position_subscriber
+
+if __name__ == '__main__':
+    Python_package.car_armor_position_subscriber.main()

@@ -1,0 +1,7 @@
+#! /usr/bin/python2.7
+
+import Python_package.image_after
+
+if __name__ == '__main__':
+    Python_package.image_after.main()
+

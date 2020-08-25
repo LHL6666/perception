@@ -1,0 +1,7 @@
+#! /usr/bin/python3
+
+import Python_package.LHL_Car_Str_Detection
+ 
+if __name__ == '__main__':
+    Python_package.LHL_Car_Str_Detection.main()
+
