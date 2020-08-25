@@ -12,8 +12,9 @@
 |稳定识别时的FPS(size不同)  |30-85   |   50-150|
 
 
-## **2. 软件效果展示**  
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.gif" width="80%" alt="" /></p>   
+## **2. 软件效果展示**   
+#### ** 若**
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
 <p align="center">哨岗识别计算坐标</p>  
@@ -66,11 +67,19 @@ python site-packages里面，例如~/.local/lib/python3.6/site-packages/
 ### **window10下**：  
 ① 下载工程：     
 ② 使用pycharm等软件打开Innocent_Bird-master工程文件    
+③ 修改Innocent_Bird.py里面的weights路径和VideoCapture相机编号，0为电脑自带摄像头
 ③ 直接运行Innocent_Bird.py      
 
 ## **对于机载视觉功能包测试**：
 ### **linux下**：  
-① 将下载好的LHL_RoboRTS/src/my_roborts_camera功能包
+① 将下载好的LHL_RoboRTS工作空间放到home下  
+② 打开终端，切换路径到~/LHL_RoboRTS/下  
+③ catkin_make  
+④ 进入到~/LHL_RoboRTS/src/my_roborts_camera/bin/下，给这里的每个文件添加可执行文件权限  
+⑤ 可选 打开~/LHL_RoboRTS/src/my_roborts_camera/src/Python_package/image_capture.py文件，修改采用的摄像头编号，一般机载PC不用改  
+⑥ 打开~/LHL_RoboRTS/src/my_roborts_camera/src/Python_package/LHL_Car_Str_Detection.py文件，修改模型绝对路径，保存  
+⑦ 启动rosmaster, 运行image_capture、image_after、LHL_Car_Str_Detection和car_armor_position_subscriber分别观察窗口的输出情况和位置信息等  
+  指令为：rosrun my_roborts_camera + 以上可执行文件
 
 # **5. 软件使用说明** 
 ## ***A. 深度学习目标检测算法***   
@@ -120,10 +129,10 @@ Innocent_Bird-master.
 │ 
 ├── Camera_Calibration.py
 ├── Convert_xml_to_txt.py
-├── Innocent_Bird.py // 开源协议
-├── test.py // 开源协议
-├── train.py // 开源协议
-└── requirements.txt // 环境
+├── Innocent_Bird.py // 
+├── test.py // 
+├── train.py // 
+└── requirements.txt // 
 ```  
 
 # **7. 原理介绍与理论支持分析**   
