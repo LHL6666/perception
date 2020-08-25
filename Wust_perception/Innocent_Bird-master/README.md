@@ -13,7 +13,7 @@
 
 
 ## **2. 软件效果展示**   
-#### ** 若**
+#### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开**
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
@@ -32,21 +32,34 @@
 
 系统版本：Ubuntu18.04    
 
-机载平台:  
+机载平台(jetson):  
 CUDA 10.2   
 python3.6
 PyTorch1.6  
 OpenCV3.4.x
 Jetpack 4.4
 PyYAML>=5.3     
-scipy>=1.4.1  
+scipy==1.4.1  
 tqdm>=4.41.0    
 numpy>=1.18.5   
-TensorFlow>=2.2   
+TensorFlow==2.2   
 matplotlib>=3.2.2     
 torchvision>=0.7.0      
 OpenCV-python>=4.1.2    
 tensorRT: jetpack 4.4刷机时安装即可 
+
+哨岗电脑(mi pro)：
+CUDA 10.1   
+python3.6
+PyTorch1.6  
+OpenCV3.4.x   
+PyYAML>=5.3     
+scipy>=1.4.1  
+tqdm>=4.41.0    
+numpy>=1.18.5   
+matplotlib>=3.2.2     
+torchvision>=0.7.0      
+OpenCV-python>=4.1.2 
 
 
 ####**硬件部分：**   
@@ -79,7 +92,7 @@ python site-packages里面，例如~/.local/lib/python3.6/site-packages/
 ⑤ 可选 打开~/LHL_RoboRTS/src/my_roborts_camera/src/Python_package/image_capture.py文件，修改采用的摄像头编号，一般机载PC不用改  
 ⑥ 打开~/LHL_RoboRTS/src/my_roborts_camera/src/Python_package/LHL_Car_Str_Detection.py文件，修改模型绝对路径，保存之后直接退出即可  
 ⑦ 启动rosmaster, 运行image_capture、image_after、LHL_Car_Str_Detection和car_armor_position_subscriber分别观察窗口的输出情况和位置信息等  
-  指令为：rosrun my_roborts_camera + 以上可执行文件
+  指令为：rosrun my_roborts_camera + 以上可执行文件(eg: image_capture)
 
 # **5. 软件使用说明** 
 ## ***A. 深度学习目标检测算法***   
