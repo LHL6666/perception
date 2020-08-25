@@ -13,7 +13,7 @@
 
 
 ## **2. 软件效果展示**   
-#### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开**
+#### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开** 
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
@@ -32,12 +32,12 @@
 
 系统版本：Ubuntu18.04    
 
-机载平台(jetson):  
-CUDA 10.2   
-python3.6
-PyTorch1.6  
-OpenCV3.4.x
-Jetpack 4.4
+机载平台(jetson):   
+CUDA 10.2    
+python3.6   
+PyTorch1.6    
+OpenCV3.4.x   
+Jetpack 4.4   
 PyYAML>=5.3     
 scipy==1.4.1  
 tqdm>=4.41.0    
@@ -46,12 +46,12 @@ TensorFlow==2.2
 matplotlib>=3.2.2     
 torchvision>=0.7.0      
 OpenCV-python>=4.1.2    
-tensorRT: jetpack 4.4刷机时安装即可 
+tensorRT: jetpack 4.4刷机时安装即可  
 
-哨岗电脑(mi pro)：
-CUDA 10.1   
-python3.6
-PyTorch1.6  
+哨岗电脑(mi pro)：   
+CUDA 10.1     
+python3.6   
+PyTorch1.6    
 OpenCV3.4.x   
 PyYAML>=5.3     
 scipy>=1.4.1  
@@ -74,16 +74,16 @@ OpenCV-python>=4.1.2
 ## **对于哨岗的测试**：  
 ### **linux下**：  
 ① 克隆代码至本地仓库：git clone https://github.com/LHL6666/perception.git Wust_Perception   
-② 添加该工程下Innocent_Bird-master项目路径到python的搜索路径，使python解释器能够找到models,runs,utils文件夹下的python文件，或者直接将这三个文件夹复制到
-python site-packages里面，例如~/.local/lib/python3.6/site-packages/
+② 添加该工程下Innocent_Bird-master项目路径到python的搜索路径，使python解释器能够找到models,runs,utils文件夹下的python文件，或者直接将这三个文件夹复制到    
+python site-packages里面，例如~/.local/lib/python3.6/site-packages/    
 ③ 修改Innocent_Bird.py文件，更改模型搜索路径，更改摄像头的编号后，打开终端cd到Innocent_Bird-master工程的根目录下面，直接运行 python3 Innocent_Bird.py     
 ### **window10下**：  
 ① 下载工程：     
 ② 使用pycharm等软件打开Innocent_Bird-master工程文件    
-③ 修改Innocent_Bird.py里面的weights路径和VideoCapture相机编号，0为电脑自带摄像头
+③ 修改Innocent_Bird.py里面的weights路径和VideoCapture相机编号，0为电脑自带摄像头   
 ③ 直接运行Innocent_Bird.py      
 
-## **对于机载视觉功能包测试**：
+## **对于机载视觉功能包测试**： 
 ### **linux下**：  
 ① 将下载好的LHL_RoboRTS工作空间放到home下  
 ② 打开终端，切换路径到~/LHL_RoboRTS/下  
