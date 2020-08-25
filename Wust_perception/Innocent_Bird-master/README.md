@@ -128,23 +128,7 @@ Innocent_Bird-master.
 
 # **7. 原理介绍与理论支持分析**   
 ## 1. 机器人与装甲板识别及哨岗识别  
-&emsp;&emsp;为实现自动识别视野中敌方机器人与装甲板，本方案中使用基于深度学习的目标检测算法。现有的目标检测算法，诸如Faster-RCNN、SSD、YOLO等先进的检测算法模型，已在公开数据集PASCAL VOC与MSCOCO上均表现出了优异的性能和识别精度，但是这些算法模型过大，依托于TITAN X这一类的高性能、高成本的GPU来保证目标检测的实时性。考虑到比赛中所使用的AI机器人无法承载高性能GPU及其相关硬件配置，不能为以上的模型提供足够的算力支持，我们队伍改进YOLO-v1算法，将其轻量化，使其能够在较低性能的GTX-1060-modile GPU上具有40+FPS的快速检测能力。
-&emsp;&emsp;目标检测网络从功能上，可以分为两部分：主干网络（Backbone）和检测网络（Detection head）。前者负责从输入图像中提取感兴趣的目标特征，后者利用这些特征进行检测，识别出目标的类别并定位。主干网络这一部分，本方案使用轻量网络ResNet-18，其网络结构如图一所示。ResNet-18包含的参数量为11.69M，浮点计算量为1.58GFLOPs，其较少的参数量和计算量，适用于低性能GPU。  
-<p align="center"><img style="display: block; margin: 0 auto;" src="PIC/resnet18网络结构.png" width="100%" alt="" /></p>  
-<p align="center">图7-1 ResNet-18网络结构</p>  
-&emsp;&emsp;检测网络中，本方案使用简单的网络结构，如图二所示，图中展示的Block模块由一层1×1的reduction卷积层接3×3卷积层构成。这样简易的结构既能增加网络结构的深度，同时还不会带来过多的参数和计算量，有助于将模型部署在低性能GPU上。  
-<p align="center"><img style="display: block; margin: 0 auto;" src="PIC/block结构.png" width="25%" alt="" /></p>  
-<p align="center">图7-2 Block结构</p>  
-&emsp;&emsp;结合以上两部分，便可以搭建本方案中所使用的目标检测网络RobDet，其整体结构如图三所示。给定输入图片，主干网络首先在图像中提取特征。这里，为了加快网络的收敛速度，本方案使用ResNet-18在ImageNet上已经预训练好的模型，将其加载到主干网络中。主干网路在提取出特征后，输出特征图，并由后续的检测网络实现对视野中的机器人及其装甲板的识别和定位。  
-<p align="center"><img style="display: block; margin: 0 auto;" src="PIC/RobDet.png" width="80%" alt="" /></p>  
-<p align="center">图7-3 Block结构</p>  
-&emsp;&emsp;为了完成此目标，本方案中采用dahua-A5131CU210单目相机采集机器人及其装甲板的训练集图像。共采集不同角度和距离下的机器人图片1784张，部分结果如图四所示。训练模型所需的实验设备为Intel i9-9940CPU和一块TITAN RTX显卡。训练中，batch大小设置为64，初始学习率为0.001，训练90个epoch，每30个epoch，学习率降低10%。训练过程中的损失函数曲线在图四中给出。  
-<p align="center"><img style="display: block; margin: 0 auto;" src="PIC/训练曲线.png" width="80%" alt="" /></p>  
-<p align="center">图7-4 训练曲线 左图：类别识别损失函数曲线 右图：定位损失函数曲线</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="PIC/识别效果.png" width="80%" alt="" /></p>  
-<p align="center">图7-5 部分RobDet检测结果的可视化</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="PIC/哨岗.png" width="100%" alt="" />  
-<p align="center">图7-6 哨岗识别效果</p>  
+
 
 ## 2. 机器人姿态估计  
   
@@ -155,9 +139,9 @@ KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都�
 多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
 
 # **8. 数据流图及软件框图**  
-<p align="center"><img style="display: block; margin: 0 auto;" src="PIC/软件框图.png" width="30%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="My_PIC/软件框图.png" width="30%" alt="" /></p>  
 <p align="center">图8-1 软件框图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="PIC/总框图.png" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="My_PIC/总框图.png" width="80%" alt="" /></p>  
 <p align="center">图8-2 总数据流框图</p>  
 
 
