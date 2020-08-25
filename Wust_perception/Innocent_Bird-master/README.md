@@ -13,17 +13,17 @@
 
 
 ## **2. 软件效果展示**  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/哨岗场地分区.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.gif" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
 <p align="center">哨岗识别计算坐标</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
 <p align="center">机器人及其装甲板识别</p>
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
 <p align="center">tensorRT加持的yolov4-tiny测试</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/image/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">7.8米识别机器人装甲板model_size(512, 418) FPS30</p>   
 
 ## **3. 依赖工具，软、硬件环境**
@@ -44,16 +44,16 @@ OpenCV-python>=4.1.2
 tensorRT: jetpack 4.4刷机时安装即可    
 
 ####**硬件部分：**   
-机载平台： Jetson AGX Xavier
+机载平台： Jetson AGX Xavier  
 哨岗电脑： 小米Pro  Intel i7-8550U @1.8G + GeForce MX150      
 单目摄像头：威鑫视界WX605摄像头，镜头150°，焦距2.45mm，分辨率1280*720，帧率 120   
-深度相机： Intel D435i深度相机，RGB：1920x1080, 30FPS, 深度图像：最高1280x720主动立体深度图，FPS: 90 max
+深度相机： Intel D435i深度相机，RGB：1920x1080, 30FPS, 深度图像：最高1280x720主动立体深度图，FPS: 90 max  
 
 
 # **4. 编译、安装方式**
 ### **linux下**：
 ① 克隆代码至本地仓库：git clone https://github.com/LHL6666/perception.git Wust_Perception   
-② 添加该工程路径到python的搜索路径，使python解释器能够找到models,runs,utils文件夹下的python文件，或者直接将这三个文件夹复制到
+② 添加该工程下Innocent_Bird-master项目路径到python的搜索路径，使python解释器能够找到models,runs,utils文件夹下的python文件，或者直接将这三个文件夹复制到
 python site-packages里面，例如~/.local/lib/python3.6/site-packages/
 ③ 修改Innocent_Bird.py文件，更改模型搜索路径，更改摄像头的编号后，打开终端cd到该工程根目录下面，直接运行 python3 Innocent_Bird.py     
 ### **window10下**：
