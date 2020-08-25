@@ -126,7 +126,7 @@ Innocent_Bird-master.
 ① 增加一层先验框anchors为[5,6, 7,9, 12,10]，应该能够更准确地检测小物体    
 ② 调整yolov5s.yaml参数number的个数应该能调出更好的模型，甚至使得BottleneckCSP层中再包含多个BottleneckCSP层，但是模型可能更大推理速度变慢    
 ③ 在上采样瓶颈层处理后尝试增加SElayer层对上一层的特征图深度进行加权处理，对于检测类型的任务应该能够加快收敛，训练速度和检测精度都应该有所提升   
-  最后，我尝试了增加anchors和SELayer层，anchors在修改之后在我们场地测试时发现对远处的装甲板确实能够标记的更准确了，但是误判率却又有所增加，所以yolov5s.yaml中我将新增的anchors注释了，后面才了解到yolov5中先验框的大小会在训练过程自动调节，已经适配地相当优秀了  
+  最后，我尝试了增加anchors和SELayer层，anchors在修改之后在我们场地测试时发现对远处的装甲板确实能够标记的更准确了，但是误判率却又有所增加，所以yolov5s.yaml中我将新增的anchors注释了，后面才了解到yolov5中先验框的大小会在训练过程自动调节，已经适配地相当优秀了。SELayer的实现原理是先做平均赤化和线性分类，然后使用relu激活函数约束后再次线性分类，最后加上Sigmoid处理。  
 
 ####修改前网络结构:  
 ```
@@ -261,6 +261,13 @@ KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都�
 <p align="center"><img style="display: block; margin: 0 auto;" src="My_PIC/总框图.png" width="80%" alt="" /></p>  
 <p align="center">图8-2 总数据流框图</p>  
 
+
+# **8. 解决的工程问题和创新之处** 
+① 解决了jetson agx xavier安装最新深度学习环境和高版本下运行官方RoboRTS ROS工作空间无法显示地图和节点发布不全的问题    
+② 解决了python3环境下无法直接使用CV_bridge的问题，不需要建立虚拟环境和单独编译python3专用的CV_bridge   
+③ 对数据集中出现的未显示机器人编号但是能看到颜色特征的机器人进行了特定处理，减少了识别classes数目，更及时地反馈敌方机器人信息。    
+④ 解决了哨岗视觉机器人定位不准的问题，定位精确度高达90%以上    
+⑤ 参考yolo检测代码，编写了自己的detection文件，例如LHL_Car_Str_Detection.py，代码已经尽量简化明了，运行速度较原代码有所提高，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色
 
 ### Reference   
 https://docs.opencv.org/master/d9/df8/tutorial_root.html    
