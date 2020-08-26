@@ -17,9 +17,12 @@
 
 ## **2. 软件效果展示**   
 #### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开** 
- 
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/整车.jpg" width="80%" alt="" /></p>   
+<p align="center">整车结构图</p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/场地字符识别.jpg" width="80%" alt="" /></p>   
+<p align="center">场地字符识别</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
-<p align="center">哨岗识别计算坐标</p>  
+<p align="center">哨岗识别计算坐标</p>   
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
 <p align="center">机器人及其装甲板识别</p>
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
