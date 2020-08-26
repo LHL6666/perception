@@ -4,7 +4,7 @@
 #  CopyRight @LHL 2020.08.13
 #  Based on yolov5 model, PyTorch
 #  Tested on mi pro , i7-8550U@1.8GHz, MX150-2G, RAM 8.0G
-#  Inference FPS:30 ~ 50, auto exposure, inference time: 0.01 ~ 0.025 s
+#  Inference FPS:30 ~ 85, auto exposure, inference time: 0.012 ~ 0.035 s
 
 from my_roborts_camera.msg import car_armor_position
 from my_roborts_camera.msg import my_msg
@@ -57,6 +57,7 @@ def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scale
 def detect_callback(data):
     global enemy, colors, names, device, pre_image, model, model_size, Position_Publish
 
+    # create a car_armor_position msg class
     Car_Armor_Position_Msgs = car_armor_position()
 
     armor_num = 0
@@ -64,40 +65,49 @@ def detect_callback(data):
     blue_car_num = 0
     red_car_position = []
     blue_car_position = []
+    
+    # the confidence of car or armor, to select the best one by iteration
     last_armor_conf = 0.5
     last_red_car_conf = 0.5
     last_blue_car_conf = 0.5
 
-    # MSG_Init
+    # MSG_Init，clc per period
+    # car=1 if find car; str=1 if find str
     Car_Armor_Position_Msgs.car = 0
     Car_Armor_Position_Msgs.str = 0
-
+    
+    # if car, make sure it's a red car or blue one...
     Car_Armor_Position_Msgs.red_car1 = 0
     Car_Armor_Position_Msgs.red_car2 = 0
     Car_Armor_Position_Msgs.blue_car1 = 0
     Car_Armor_Position_Msgs.blue_car2 = 0
-
+    
+    # red car position, the most confident one
     Car_Armor_Position_Msgs.red_top_left_x = 0.0
     Car_Armor_Position_Msgs.red_top_left_y = 0.0
     Car_Armor_Position_Msgs.red_bottom_right_x = 0.0
     Car_Armor_Position_Msgs.red_bottom_right_y = 0.0
-
+    
+    # blue car position, the most confident one
     Car_Armor_Position_Msgs.blue_top_left_x = 0.0
     Car_Armor_Position_Msgs.blue_top_left_y = 0.0
     Car_Armor_Position_Msgs.blue_bottom_right_x = 0.0
     Car_Armor_Position_Msgs.blue_bottom_right_y = 0.0
 
+    # the most confident armor position of enemy
     Car_Armor_Position_Msgs.armor_top_left_x = 0.0
     Car_Armor_Position_Msgs.armor_top_left_y = 0.0
     Car_Armor_Position_Msgs.armor_bottom_right_x = 0.0
     Car_Armor_Position_Msgs.armor_bottom_right_y = 0.0
 
+    # the temporary target position, eg: find str'Heart'
     Car_Armor_Position_Msgs.temp_top_left_x = 0.0
     Car_Armor_Position_Msgs.temp_top_left_y = 0.0
     Car_Armor_Position_Msgs.temp_bottom_right_x = 0.0
     Car_Armor_Position_Msgs.temp_bottom_right_y = 0.0
 
     # print("receiving image for starting detection now!")
+    # my image msg data to image
     image = np.ndarray(shape=(data.height, data.width, data.channels), dtype=np.uint8,
                        buffer=data.data)
 
@@ -161,7 +171,9 @@ def detect_callback(data):
                     if label.startswith('red_car') or label.startswith('blue_car'):
                         if label.startswith('red_car'):
                             red_car_num += 1
+                            # color red
                             color = (0, 0, 255)
+                            # iteration, find the most confident one
                             if conf > last_red_car_conf:
                                 last_red_car_conf = conf
                                 red_car_position.append(pst1)
@@ -178,7 +190,9 @@ def detect_callback(data):
 
                         else:
                             blue_car_num += 1
+                            # color blue
                             color = (255, 0, 0)
+                            # iteration, find the most confident one
                             if conf > last_blue_car_conf:
                                 last_blue_car_conf = conf
                                 blue_car_position.append(pst1)
@@ -209,7 +223,7 @@ def detect_callback(data):
                         else:
                             color = (0, 255, 0)
 
-                    # if find string or number
+                    # if find the target of string or number
                     else:
                         Car_Armor_Position_Msgs.str = 1
                         if label.startswith('Heart'):
@@ -227,10 +241,12 @@ def detect_callback(data):
                     if conf > 0.55:
                         plot_one_box(xy, image, label=label, color=color, line_thickness=2)
                     else:
+                        # if not sure, rectangle it with gray color
                         plot_one_box(xy, image, label=label, color=(0, 0, 0), line_thickness=2)
                 else:
                     plot_one_box(xy, image, label=label, color=color, line_thickness=2)
 
+        # visual
         cv2.imshow("detection", image)
         cv2.waitKey(1)
         Position_Publish.publish(Car_Armor_Position_Msgs)
@@ -239,7 +255,9 @@ def detect_callback(data):
 def main():
     global colors, names, device, pre_image, model, model_size, Position_Publish
     # **************************
+    # init a image array
     pre_image = np.zeros((720, 1280, 3), dtype=np.uint8)
+    # the size for detection, 32*x
     model_size = (512, 448)
     image_size = (720, 1280)
     # **************************
@@ -257,14 +275,18 @@ def main():
     # speed up constant image size inference
     cudnn.benchmark = True
 
-    # Get names
+    # Get names and color
     names = model.module.names if hasattr(model, 'module') else model.names
     colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(names))]
     print("start receiving image")
     rospy.init_node('Detection_node', anonymous=True)
+    
+    # my_msg if a type of msg defined by myself for image transmission
     rospy.Subscriber('Camera/image_after', my_msg, detect_callback)
+    # car_armor_position is a msg type, record location information
     Position_Publish = rospy.Publisher('MSG/car_armor_position_msg', car_armor_position, queue_size=2)
-
+    
+    # Register a process and start
     detection_thread = threading.Thread(target=rospy.spin)
     detection_thread.start()
 
