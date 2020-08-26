@@ -235,11 +235,11 @@ Model Summary: 197 layers, 7.46739e+06 parameters, 7.46739e+06 gradients
 ```
 
 ## 数据集  
-由于拍摄的数据集前后相关性不大，因此未采用视频标注工具而使用了labelimg的标注软件  
-yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo格式的标签，不过在该工程中提供了voc转yolo格式的Convert_xml_to_txt.py文件。
+由于拍摄的数据集前后相关性不大，因此未采用视频标注工具而使用了labelimg的标注软件       
+yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo格式的标签，不过在该工程中提供了voc转yolo格式的Convert_xml_to_txt.py文件。   
 ① 哨岗搭载的模型训练用的数据集一共250张左右，其中验证数据集50左右，在小米笔记本pro上(MX150入门显卡)200epochs, batch_size 16, train_size和test_size为256时训练时间仅仅为0.65个小时，mAP@0.5接近1，可在下面链接下载数据集  
-② 机器人搭载的模型训练用的数据集一共1000张左右，其中包含了验证数据集200张左右，在小米笔记本pro上300 epochs, batch_size 8, train_size和test_size为480时训练时间6个小时左右，在jetson agx xavier上 300 epochs, batch_size 128, train_size和test_size为480时训练时间仅仅为2个小时左右， 由于该数据集比较大，不好上传暂不开源。（实际结果可能会有偏差，非严格测试）  
-③ 训练数据集文件结构：  
+② 机器人搭载的模型训练用的数据集一共1000张左右，其中包含了验证数据集200张左右，在小米笔记本pro上300 epochs, batch_size 8, train_size和test_size为480时训练时间6个小时左右，在jetson agx xavier上 300 epochs, batch_size 128, train_size和test_size为480时训练时间仅仅为2个小时左右， 由于该数据集比较大，不好上传暂不开源。（实际结果可能会有偏差，非严格测试）   
+③ 训练数据集文件结构：   
 ```
 .
 ├── DataSet_V5
