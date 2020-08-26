@@ -280,9 +280,10 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 ⑤ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
 ⑥ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
 ⑦ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上实现测试）   
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
-<p align="center">哨岗场地分区</p> 
+
 #### 坐标的简单计算如下所示
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
+<p align="center">哨岗场地分区</p>
 ```
 # 场地半宽x=254cm, y0=340cm, y1=354cm
 # adjust_r为调整系数，field_y1为y1(逆透视后图像下方到参考点的垂直距离), field_y0即指y0(逆透视后图像上方到参考点的垂直距离), 具体见上图
