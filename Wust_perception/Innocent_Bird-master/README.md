@@ -1,6 +1,6 @@
-## copyright@LHL of Wust
+## copyright@LHL of Wust ChongShi team
 ## **1. 软件功能介绍**  
-哨岗感知功能实现了敌我机器人识别、敌方机器人装甲板识别、敌方机器人位置坐标识别。
+哨岗感知功能实现了敌我机器人识别、敌方机器人装甲板识别、敌方机器人位置坐标识别；机器人感知部分实现了在ROS空间里通过自定义图像类型进行发布和订阅解码，进行图像检测并发布红蓝方及其装甲板置信度最高的机器人位置坐标，也同样实现了敌我机器人识别，装甲板类型识别，姿态识别，障碍物编号识别等功能。
 #### **机器人和装甲板识别算法框架：**    
 使用了深度学习目标检测算法：一共尝试了**yolov4, yolov4-tiny, "ultralytics yolov5", AlexeyAB发行的tensorRT加速版yolov4-tiny**框架，其中tensorRT加持的yolov4-tiny算法在我们的机载PC（仅为ARM处理器）上识别速度能够高达近乎150帧，能够在三米内稳定识别装甲板和尾灯，7米之内稳定识别机器人（有一定的防遮挡能力），但是由于对装甲板的识别距离太近，限制了日后决策组发展，因此最后采取折中的方案，最终在哨岗视觉和机器人视觉处理上使用了来自ultralytics公司的"yolov5"框架，该框架在调节模型大小和优化器等参数后取得较好的效果，能够在6米内稳定识别装甲板和尾灯，识别机器人的准确度也很高 
 主要功能对比如下（以最后模型为准）：   
@@ -22,6 +22,8 @@
 <p align="center">机器人及其装甲板识别</p>
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
 <p align="center">tensorRT加持的yolov4-tiny测试</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
+<p align="center">Ros中机器人机载PC感知测试(512, 414) FPS22左右(由于录屏后机载电脑cpu100%)</p> 
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40左右</p>   
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
@@ -61,10 +63,11 @@ matplotlib>=3.2.2
 torchvision>=0.7.0      
 OpenCV-python>=4.1.2 
 
+数据集采集：labelimg  
 
 #### **硬件部分：**   
 机载平台： Jetson AGX Xavier  
-哨岗电脑： 小米Pro  Intel i7-8550U @1.8G + GeForce MX150      
+哨岗电脑： 小米Pro  Intel i7-8550U @1.8G 8G + GeForce MX150      
 单目摄像头：威鑫视界WX605摄像头，镜头150°，焦距2.45mm，分辨率1280*720，帧率 120   
 深度相机： Intel D435i深度相机，RGB：1920x1080, 30FPS, 深度图像：最高1280x720主动立体深度图，FPS: 90 max  
 
@@ -121,30 +124,30 @@ Innocent_Bird-master.
 ```
 .
 ├── LHL_RoboRTS
-│   ├── src // 
-│   │   ├── my_roborts_camera // 
-|   │   │   ├── bin //
-|   |   │   │   ├── car_armor_position_subscriber //
-|   |   │   │   ├── image_after //
-|   |   │   │   ├── image_capture //
-|   |   │   │   ├── LHL_Car_Str_Detection //
-│   │   │   ├── msg //
-|   |   │   │   ├── my_msg.msg //
-|   |   │   │   ├── car_armor_position.msg //
-│   │   │   ├── src //
-|   |   │   │   ├── Python_package //
-|   |   |   │   │   ├── __pycache__ //
-|   |   |   |   │   ├── car_armor_position_subscriber.py //
+│   ├── src
+│   │   ├── my_roborts_camera // 视觉功能包
+|   │   │   ├── bin // 存放可执行文件的文件夹
+|   |   │   │   ├── car_armor_position_subscriber // 机器人、装甲板以及位置信息的car_armor_position_subscriber.py订阅文件对应的可执行文件
+|   |   │   │   ├── image_after // 图像传输中介image_after.py对应的可执行文件
+|   |   │   │   ├── image_capture // 读取摄像头视频流image_capture.py文件对应的可执行文件
+|   |   │   │   ├── LHL_Car_Str_Detection // 进行检测跟踪机器人装甲板等类的可执行文件，对应于LHL_Car_Str_Detection.py
+│   │   │   ├── msg // 消息文件夹
+|   |   │   │   ├── my_msg.msg // 自定义的图像类型消息，用于解决python3无法直接使用CV_bridge的问题（在image_after.py和LHL_Car_Str_Detection.py中体现）
+|   |   │   │   ├── car_armor_position.msg // 机器人和装甲板还有临时目标的位置信息存放文件
+│   │   │   ├── src // 源码文件
+|   |   │   │   ├── Python_package // 存放python文件的文件夹
+|   |   |   │   │   ├── __pycache__
+|   |   |   |   │   ├── car_armor_position_subscriber.py // 机器人、装甲板以及位置信息的信息订阅实现文件
 |   |   |   |   │   ├── car_armor_position_subscriber.pyc //
-|   |   |   |   │   ├── image_after.py //
+|   |   |   |   │   ├── image_after.py // 图像传输中介的文件
 |   |   |   |   │   ├── image_after.pyc //
-|   |   |   |   │   ├── image_capture.py //
+|   |   |   |   │   ├── image_capture.py // 读取摄像头图像并发布的文件
 |   |   |   |   │   ├── image_capture.pyc //
-|   |   |   |   │   ├── LHL_Car_Str_Detection.py //
-│   │   │   ├── CMakeLists.txt //
-│   │   │   ├── package.xml //
-│   │   │   ├── setup.py //
-│   │   ├── CMakeLists.txt // 
+|   |   |   |   │   ├── LHL_Car_Str_Detection.py // 进行检测跟踪机器人、装甲板、尾灯和障碍物字符编号的文件
+│   │   │   ├── CMakeLists.txt // 编译配置文件，添加依赖项等
+│   │   │   ├── package.xml // 描述文件
+│   │   │   ├── setup.py
+│   │   ├── CMakeLists.txt
 ```
 
 # **6. 软件使用说明** 
@@ -154,7 +157,7 @@ Innocent_Bird-master.
   分析推测：   
 ① 增加一层先验框anchors为[5,6, 7,9, 12,10]，应该能够更准确地检测小物体    
 ② 调整yolov5s.yaml参数number的个数应该能调出更好的模型，甚至使得BottleneckCSP层中再包含多个BottleneckCSP层，但是模型可能更大推理速度变慢    
-③ 在上采样瓶颈层处理后尝试增加SElayer层对上一层的特征图深度进行加权处理，对于检测类型的任务应该能够加快收敛，训练速度和检测精度都应该有所提升   
+③ 在上采样瓶颈层处理后尝试增加SELayer层对上一层的特征图深度进行加权处理，对于检测类型的任务应该能够加快收敛，训练速度和检测精度都应该有所提升   
   最后，我尝试了增加anchors和SELayer层，anchors在修改之后在我们场地测试时发现对远处的装甲板确实能够标记的更准确了，但是误判率却又有所增加，所以yolov5s.yaml中我将新增的anchors注释了，后面才了解到yolov5中先验框的大小会在训练过程自动调节，已经适配地相当优秀了。SELayer的实现原理是先做平均赤化和线性分类，然后使用relu激活函数约束后再次线性分类，最后加上Sigmoid处理。  
 
 ####修改前网络结构:  
@@ -224,6 +227,7 @@ Model Summary: 197 layers, 7.46739e+06 parameters, 7.46739e+06 gradients
 ```
 
 ## 数据集  
+由于拍摄的数据集前后相关性不大，因此未采用视频标注工具而使用了labelimg的标注软件  
 yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo格式的标签，不过在该工程中提供了voc转yolo格式的Convert_xml_to_txt.py文件。
 ① 哨岗搭载的模型训练用的数据集一共250张左右，其中验证数据集50左右，在小米笔记本pro上(MX150入门显卡)200epochs, batch_size 16, train_size和test_size为256时训练时间仅仅为0.65个小时，mAP@0.5接近1，可在下面链接下载数据集  
 ② 机器人搭载的模型训练用的数据集一共1000张左右，其中包含了验证数据集200张左右，在小米笔记本pro上300 epochs, batch_size 8, train_size和test_size为480时训练时间6个小时左右，在jetson agx xavier上 300 epochs, batch_size 128, train_size和test_size为480时训练时间仅仅为2个小时左右， 由于该数据集比较大，不好上传暂不开源。（实际结果可能会有偏差，非严格测试）  
@@ -267,17 +271,16 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 
 # **7. 原理介绍与理论支持分析**   
 ## 1. 哨岗识别原理与流程  
-
-
-① 改进ultralytics公司开源的yolov5框架训练模型来识别红蓝车和装甲板    
-② 使用逆透视算法对梯形畸变进行矫正，得到了只有半个场地区域大小的俯视图    
-③ 编写矫正和标定函数，根据环境来设定并校准场地，得到场地中心点和一半的场地图像       
-④ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
-⑤ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
-⑥ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上测试）   
+① 摄像头矫正得到相机参数用于OpenCV remap，得到无畸变图像
+② 使用逆透视算法对梯形畸变进行矫正，得到了只有半个场地区域大小的俯视图   
+③ 增加保存图像功能，收集数据集并标准数据集
+④ 改进ultralytics公司开源的yolov5框架来训练红蓝车和装甲板模型  
+⑤ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
+⑥ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
+⑦ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上实现测试）   
 
 ## 2. 机器人姿态估计  
-由于回校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只做了识别机器人尾灯
+由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只做了识别机器人尾灯的
   
 
 ### 3. 机器人运动预测
@@ -294,7 +297,7 @@ KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都�
 
 # **8. 解决的工程问题和创新之处** 
 - [x] 解决了jetson agx xavier安装最新深度学习环境和高版本下运行官方RoboRTS ROS工作空间无法显示地图和节点发布不全的问题    
-- [x] 解决了python3环境下无法直接使用CV_bridge的问题，不需要建立虚拟环境和单独编译python3专用的CV_bridge   
+- [x] 解决了python3环境下无法直接使用CV_bridge的问题，不需要建立虚拟环境和单独编译python3专用的CV_bridge（在image_after.py和LHL_Car_Str_Detection.py中体现）   
 - [x] 对数据集中出现的未显示机器人编号但是能看到颜色特征的机器人进行了特定处理，减少了识别classes数目，更及时地反馈敌方机器人信息。    
 - [x] 解决了哨岗视觉机器人定位不准的问题，定位精确度高达90%以上    
 - [x] 参考yolo检测代码，编写了自己的detection文件(Innocent_Bird.py, LHL_Car_Str_Detection.py)，代码已经尽量简化明了，运行速度较原代码有所提高，能够用于ros工作空间下面运行不依靠封装良好的Darknet结构，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色，置信度低时灰色等(哨岗和机载检测有差异)
