@@ -16,7 +16,7 @@
 
 
 ## **2. 软件效果展示**   
-#### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开** 
+#### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开，或者使用Linux下浏览器打开** 
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/整车.jpg" width="80%" alt="" /></p>   
 <p align="center">整车结构图</p>   
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/场地字符识别.jpg" width="80%" alt="" /></p>   
