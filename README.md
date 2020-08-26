@@ -19,21 +19,21 @@
 #### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开** 
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/整车.jpg" width="80%" alt="" /></p>   
 <p align="center">整车结构图</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/场地字符识别.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/场地字符识别.jpg" width="80%" alt="" /></p>   
 <p align="center">场地字符识别</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
 <p align="center">哨岗识别计算坐标</p>   
 <p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/哨岗场地分区图.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区图</p>
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
 <p align="center">tensorRT加持的yolov4-tiny测试</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/镜头划伤起雾时机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/镜头划伤起雾时机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
 <p align="center">镜头划伤起雾时机器人及其装甲板识别</p> 
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40左右</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">7.8米识别机器人装甲板model_size(512, 418) FPS30左右</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
 <p align="center">Ros中机器人机载PC感知测试(512, 414) FPS20左右(录屏后机载电脑cpu100%)</p> 
 
 
@@ -312,15 +312,16 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 
 # **8. 数据流图及软件框图**  
 ##### 若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/哨岗流程图.jpg" width="30%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/哨岗流程图.jpg" width="30%" alt="" /></p>  
 <p align="center">图8-1 哨岗流程图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/机载模型参数评估图.png" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/机载模型参数评估图.png" width="80%" alt="" /></p>  
 <p align="center">图8-2 机载模型参数评估图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/修改过的网络框架.jpg" width="30%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/修改过的网络框架.jpg" width="30%" alt="" /></p>  
 <p align="center">图8-1 修改过的网络框架</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/AI_硬件框图.jpg" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/AI_硬件框图.jpg" width="80%" alt="" /></p>  
 <p align="center">图8-4 AI_硬件框图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/使用jetson agx xavier训练模型时长.png" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/使用jetson%20agx%20xavier训练模型时长.png
+" width="80%" alt="" /></p>  
 <p align="center">图8-3 使用jetson agx xavier训练模型时长</p>  
 
 
