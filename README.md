@@ -306,11 +306,10 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
   由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，麦轮已经被遮挡了一半，仅仅根据麦轮来解算得出姿态信息可信度大大降低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑的配色让我们不能简单通过深度学习来识别区分大部分机器人姿态。不过，我们也对下一步的方向有了初步规划。  
   目前主流的目标检测大部分以多目标检测为主，6D姿态估计的方法也是涉及多目标检测的，并且同样也是基于平面2D图像来进行预测的，不同的是6D姿态估计预测的是xyzuvw，包括了平移和旋转，一定程度上来说6D姿态检测就是特殊的2D目标检测，因此我们可以基于目标检测框架来进行姿态估计。由立体视觉知识可知，3D物体空间姿态可以用旋转矩阵R和平移矩阵T来表示，旋转矩阵R需要满足单位正交的条件，直接用于网络训练的话很难收敛到这种正交限制，因此有必要使用其它能代表这个旋转矩阵的参数来进行简化它。比较容易想到用四元数或欧拉角来表示旋转矩阵R的旋转，但是由于四元数要求这个四维向量必须是一个单位向量，而欧拉角具有周期性，同一个角度的表示有无数种方法，因此这两种方式都不容易使网络回归收敛。  
   既然直接使用旋转矩阵来进行网络回归太困难，那么我们可以考虑将其“拆解”，假设存在一个三维向量，其方向与旋转轴重合，使用它的模的大小来表示旋转的正角度，使用这个三维向量来代替旋转矩阵R，就能够削弱网络收敛结果限制；但是找到了怎么表示旋转的方法，还要处理xyz的平移。有坐标转换的思想可知
-  
-T_x = \frac{(BoxCenterX - BoxCenterY)T_z}{F_x}
 
-T_y = \frac{(BoxCenterX - BoxCenterY)T_z}{F_y}
-  
+<a href="https://www.codecogs.com/eqnedit.php?latex=T_x&space;=\frac{(BoxCenterX&space;-&space;BoxCenterY)T_z}{F_x}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?T_x&space;=\frac{(BoxCenterX&space;-&space;BoxCenterY)T_z}{F_x}" title="T_x =\frac{(BoxCenterX - BoxCenterY)T_z}{F_x}" /></a>
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=T_y&space;=\frac{(BoxCenterX&space;-&space;BoxCenterY)T_z}{F_y}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?T_y&space;=\frac{(BoxCenterX&space;-&space;BoxCenterY)T_z}{F_y}" title="T_y =\frac{(BoxCenterX - BoxCenterY)T_z}{F_y}" /></a>
 
 ### 3. 机器人运动预测
 初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法(Minimum Output Sum of SquaredError)对该视觉检测算法最合适的，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都不是很好，MOSSE在我的测试过程中保持了120帧左右的跟踪速度，精度和抗干扰性好很多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
