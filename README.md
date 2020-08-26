@@ -17,23 +17,23 @@
 
 ## **2. 软件效果展示**   
 #### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开** 
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/整车.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/整车.jpg" width="80%" alt="" /></p>   
 <p align="center">整车结构图</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/场地字符识别.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/场地字符识别.jpg" width="80%" alt="" /></p>   
 <p align="center">场地字符识别</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
 <p align="center">哨岗识别计算坐标</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/哨岗场地分区图.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/哨岗场地分区图.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区图</p>
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
 <p align="center">tensorRT加持的yolov4-tiny测试</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/镜头划伤起雾时机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/镜头划伤起雾时机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
 <p align="center">镜头划伤起雾时机器人及其装甲板识别</p> 
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40左右</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">7.8米识别机器人装甲板model_size(512, 418) FPS30左右</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
 <p align="center">Ros中机器人机载PC感知测试(512, 414) FPS20左右(录屏后机载电脑cpu100%)</p> 
 
 
@@ -290,7 +290,7 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 #### 坐标的简单计算如下所示  
 
 #### 哨岗视角建立坐标系图
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区</p>  
 
 ```
@@ -311,15 +311,15 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法(Minimum Output Sum of SquaredError)对该视觉检测算法最合适的，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都不是很好，MOSSE在我的测试过程中保持了120帧左右的跟踪速度，精度和抗干扰性好很多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
 
 # **8. 数据流图及软件框图**  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/哨岗流程图.jpg" width="30%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/哨岗流程图.jpg" width="30%" alt="" /></p>  
 <p align="center">图8-1 哨岗流程图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/机载模型参数评估图.png" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/机载模型参数评估图.png" width="80%" alt="" /></p>  
 <p align="center">图8-2 机载模型参数评估图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/修改过的网络框架.jpg" width="30%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/修改过的网络框架.jpg" width="30%" alt="" /></p>  
 <p align="center">图8-1 修改过的网络框架</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/AI_硬件框图.jpg" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/AI_硬件框图.jpg" width="80%" alt="" /></p>  
 <p align="center">图8-4 AI_硬件框图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/使用jetson agx xavier训练模型时长.png" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/使用jetson agx xavier训练模型时长.png" width="80%" alt="" /></p>  
 <p align="center">图8-3 使用jetson agx xavier训练模型时长</p>  
 
 
