@@ -41,12 +41,15 @@ class image_after:
     def subscriber_callback(self, data):
         try:
             self.image0 = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            
+            # my image msg type
             image_size = self.image0.shape
             image = my_msg()
             image.height = image_size[0]
             image.width = image_size[1]
             image.channels = image_size[2]
             image.data = data.data
+            # publish my image msg
             self.image_pub.publish(image)
             print('publishing camera after frame')
             # cv2.imshow("Image after", self.image0)
