@@ -14,8 +14,7 @@
 
 ## **2. 软件效果展示**   
 #### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开** 
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
-<p align="center">哨岗场地分区</p>  
+ 
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
 <p align="center">哨岗识别计算坐标</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
@@ -274,15 +273,21 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 
 # **7. 原理介绍与理论支持分析**   
 ## 1. 哨岗识别原理与流程  
-① 摄像头矫正得到相机参数用于OpenCV remap，得到无畸变图像
+① 摄像头矫正得到相机参数用于OpenCV remap，得到无畸变图像   
 ② 使用逆透视算法对梯形畸变进行矫正，得到了只有半个场地区域大小的俯视图   
 ③ 增加保存图像功能，收集数据集并标准数据集
 ④ 改进ultralytics公司开源的yolov5框架来训练红蓝车和装甲板模型  
 ⑤ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
 ⑥ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
 ⑦ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上实现测试）   
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
+<p align="center">哨岗场地分区</p> 
+#### 坐标的简单计算如下所示
 ```
+# 场地半宽x=254cm, y0=340cm, y1=354cm
+# adjust_r为调整系数，field_y1为y1(逆透视后图像下方到参考点的垂直距离), field_y0即指y0(逆透视后图像上方到参考点的垂直距离), 具体见上图
 adjust_r = field_y1 / field_y0
+# Car_Center[0]指逆透视图中机器人在height方向上的位置，Car_Center[0]指逆透视图中机器人在width方向上的位置
 car_y = ((ref_point[1] - Car_Center[1]) / ref_point[1]) * field_y0 * adjust_r
 car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_r
 ```
