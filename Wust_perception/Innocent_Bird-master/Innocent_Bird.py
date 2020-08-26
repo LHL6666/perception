@@ -314,6 +314,7 @@ while True:
     Bird_img = cv2.warpPerspective(image, M, (Image_W, Image_H))
     Bird_img = cv2.resize(Bird_img, (720, 900))
 
+    # detection
     detect(Bird_img)
 
     cv2.imshow("Result", Bird_img)
