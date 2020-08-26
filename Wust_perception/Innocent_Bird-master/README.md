@@ -275,7 +275,7 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 ## 1. 哨岗识别原理与流程  
 ① 摄像头矫正得到相机参数用于OpenCV remap，得到无畸变图像   
 ② 使用逆透视算法对梯形畸变进行矫正，得到了只有半个场地区域大小的俯视图   
-③ 增加保存图像功能，收集数据集并标准数据集
+③ 增加保存图像功能，收集数据集并标准数据集  
 ④ 改进ultralytics公司开源的yolov5框架来训练红蓝车和装甲板模型  
 ⑤ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
 ⑥ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
@@ -283,12 +283,12 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 
 #### 坐标的简单计算如下所示  
 
-
+#### 哨岗视角建立坐标系图
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区</p>  
 
 ```
-# 场地半宽x=254cm, y0=340cm, y1=354cm  
+# 场地半宽x=254cm, y0=340cm, y1=354cm  ，得出的car_x, car_y为该种坐标系下实际的1:1坐标
 # adjust_r为调整系数，field_y1为y1(逆透视图中图像底部到参考点对应的实际场地垂直距离), field_y0即指y0(逆透视图中由参考点到图像顶部对应的实际场地垂直距离), 具体见上图  
 adjust_r = field_y1 / field_y0  
 # Car_Center[0]指逆透视图中机器人在height方向上的位置，Car_Center[0]指逆透视图中机器人在width方向上的位置  
@@ -297,7 +297,7 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 ```
 
 ## 2. 机器人姿态估计  
-由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，根据麦轮来解算得出姿态信息可信度很低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑配色不能简单通过深度学习来识别区分大部分机器人姿态。因此针对AI机器人姿态检测的困难性，这里分享一下我的想法：  
+  由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，根据麦轮来解算得出姿态信息可信度很低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑配色不能简单通过深度学习来识别区分大部分机器人姿态。因此针对AI机器人姿态检测的困难性，这里分享一下我的想法：  
 这里已知尾灯是最可信的姿态特征，云台的可转角度并不能达到±90°
   
 
@@ -309,12 +309,16 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 <p align="center">图8-1 哨岗流程图</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/机载模型参数评估图.png" width="80%" alt="" /></p>  
 <p align="center">图8-2 机载模型参数评估图</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/修改过的网络框架.jpg" width="30%" alt="" /></p>  
+<p align="center">图8-1 修改过的网络框架</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/机载模型参数评估图.png" width="80%" alt="" /></p>  
+<p align="center">图8-2 机载模型参数评估图</p>  
 
 
-# **8. 解决的工程问题和创新之处** 
-- [x] 解决了jetson agx xavier安装最新深度学习环境和高版本下运行官方RoboRTS ROS工作空间无法显示地图和节点发布不全的问题    
+# **9. 解决的工程问题和创新之处** 
+- [x] 解决了jetson agx xavier安装最新深度学习环境jetpack4.4和高版本下运行官方RoboRTS ROS工作空间无法显示地图和节点发布不全的问题    
 - [x] 解决了python3环境下无法直接使用CV_bridge的问题，不需要建立虚拟环境和单独编译python3专用的CV_bridge（在image_after.py和LHL_Car_Str_Detection.py中体现）   
-- [x] 对数据集中出现的未显示机器人编号但是能看到颜色特征的机器人进行了特定处理，减少了识别classes数目，更及时地反馈敌方机器人信息。    
+- [x] 对数据集中出现的未显示机器人编号但是能看到颜色特征的机器人进行了特定处理(例如机器人编号被遮挡有红色特征都归为red_car2)，减少了识别classes数目，更及时地反馈敌方机器人信息。    
 - [x] 解决了哨岗视觉机器人定位不准的问题，定位精确度高达90%以上    
 - [x] 参考yolo检测代码，编写了自己的detection文件(Innocent_Bird.py, LHL_Car_Str_Detection.py)，代码已经尽量简化明了，运行速度较原代码有所提高，能够用于ros工作空间下面运行不依靠封装良好的Darknet结构，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色，置信度低时为灰色等(哨岗和机载检测有差异)
 
