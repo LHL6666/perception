@@ -23,7 +23,7 @@
 <p align="center">场地字符识别</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
 <p align="center">哨岗识别计算坐标</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/哨岗场地分区图.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/哨岗场地分区图.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区图</p>
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
 <p align="center">tensorRT加持的yolov4-tiny测试</p>  
@@ -290,7 +290,7 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 #### 坐标的简单计算如下所示  
 
 #### 哨岗视角建立坐标系图
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/哨岗场地分区图.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区</p>  
 
 ```
