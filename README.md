@@ -17,7 +17,7 @@
 
 ## **2. 软件效果展示**   
 #### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开** 
-<p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/整车.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/整车.jpg" width="80%" alt="" /></p>   
 <p align="center">整车结构图</p>   
 <p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perceptionInnocent_Bird-master/images/场地字符识别.jpg" width="80%" alt="" /></p>   
 <p align="center">场地字符识别</p>  
@@ -311,6 +311,7 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法(Minimum Output Sum of SquaredError)对该视觉检测算法最合适的，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都不是很好，MOSSE在我的测试过程中保持了120帧左右的跟踪速度，精度和抗干扰性好很多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
 
 # **8. 数据流图及软件框图**  
+##### 若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开
 <p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/哨岗流程图.jpg" width="30%" alt="" /></p>  
 <p align="center">图8-1 哨岗流程图</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="/Wust_perception/Innocent_Bird-master/Data_diagram_image/机载模型参数评估图.png" width="80%" alt="" /></p>  
