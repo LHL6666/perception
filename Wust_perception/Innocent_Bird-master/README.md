@@ -279,19 +279,22 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 ④ 改进ultralytics公司开源的yolov5框架来训练红蓝车和装甲板模型  
 ⑤ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
 ⑥ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
-⑦ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上实现测试）   
+⑦ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上实现测试）    
 
-#### 坐标的简单计算如下所示
+#### 坐标的简单计算如下所示  
+
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
-<p align="center">哨岗场地分区</p>
+<p align="center">哨岗场地分区</p>  
+
 ```
-# 场地半宽x=254cm, y0=340cm, y1=354cm
-# adjust_r为调整系数，field_y1为y1(逆透视后图像下方到参考点的垂直距离), field_y0即指y0(逆透视后图像上方到参考点的垂直距离), 具体见上图
-adjust_r = field_y1 / field_y0
-# Car_Center[0]指逆透视图中机器人在height方向上的位置，Car_Center[0]指逆透视图中机器人在width方向上的位置
-car_y = ((ref_point[1] - Car_Center[1]) / ref_point[1]) * field_y0 * adjust_r
-car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_r
+# 场地半宽x=254cm, y0=340cm, y1=354cm  
+# adjust_r为调整系数，field_y1为y1(逆透视后图像下方到参考点的垂直距离), field_y0即指y0(逆透视后图像上方到参考点的垂直距离), 具体见上图  
+adjust_r = field_y1 / field_y0  
+# Car_Center[0]指逆透视图中机器人在height方向上的位置，Car_Center[0]指逆透视图中机器人在width方向上的位置  
+car_y = ((ref_point[1] - Car_Center[1]) / ref_point[1]) * field_y0 * adjust_r  
+car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_r  
 ```
+
 ## 2. 机器人姿态估计  
 由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，根据麦轮来解算得出姿态信息可信度很低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑配色不能简单通过深度学习来识别区分大部分机器人姿态。因此针对AI机器人姿态检测的困难性，这里分享一下我的想法：  
 这里已知尾灯是最可信的姿态特征，云台的可转角度并不能达到±90°
