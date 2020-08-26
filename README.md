@@ -304,7 +304,7 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 
 ## 2. 机器人姿态估计  
   由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，麦轮已经被遮挡了一半，仅仅根据麦轮来解算得出姿态信息可信度大大降低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑的配色让我们不能简单通过深度学习来识别区分大部分机器人姿态。不过，我们也对下一步的方向有了初步规划。  
-  目前主流的目标检测大部分以多目标检测为主，6D姿态估计的方法也是涉及多目标检测的，并且同样也是基于平面2D图像来进行预测的，不同的是6D姿态估计预测的是xyzuvw，包括了平移和旋转，一定程度上来说6D姿态检测就是特殊的2D目标检测，因此我们可以基于目标检测框架来进行姿态估计。由立体视觉知识可知，3D物体空间姿态可以用旋转矩阵R和平移矩阵T来表示，旋转矩阵R需要满足单位正交的条件，直接用于网络训练的话很难收敛到这种正交限制，因此有必要使用其它能代表这个旋转矩阵的参数来进行简化它。比较容易想到用四元数或欧拉角来表示旋转矩阵R的旋转，但是由于四元数要求这个四维向量必须是一个单位向量，而欧拉角具有周期性，同一个角度的表示有无数种方法，因此这两种方式都不容易使网络回归收敛。  
+  目前主流的目标检测大部分以多目标检测为主，6D姿态估计的方法也是涉及多目标检测的，并且同样也是基于平面2D图像来进行预测的，不同的是6D姿态估计预测的是xyzuvw，包括了平移和旋转，一定程度上来说6D姿态检测就是特殊的2D目标检测，因此我们可以基于目标检测框架来进行姿态估计。由立体视觉知识可知，3D物体空间姿态可以用旋转矩阵R和平移矩阵T来表示，旋转矩阵R需要满足单位正交的条件，直接用于网络训练的话很难收敛到这种正交限制结果，因此有必要使用其它能代表这个旋转矩阵的参数来进行简化它。比较容易想到用四元数或欧拉角来表示旋转矩阵R的旋转，但是由于四元数要求这个四维向量必须是一个单位向量，而欧拉角具有周期性，同一个角度的表示有无数种方法，因此这两种方式都不容易使网络回归收敛。  
   既然直接使用旋转矩阵来进行网络回归太困难，那么我们可以考虑将其“拆解”，假设存在一个三维向量，其方向与旋转轴重合，使用它的模的大小来表示旋转的正角度，使用这个三维向量来代替旋转矩阵R，就能够削弱网络收敛结果限制；但是找到了怎么表示旋转的方式，还要处理xyz的平移。由坐标转换的思想可知只要将从2D平面检测到的目标中心点转换到相机坐标系xy中即可很好地解决该问题。训练目标明确后，就可以借助2D目标检测框架来设计训练模型了，与2D目标检测的模型架构不同的是新增加了一个姿态预测的分支。
 #### 坐标的转换如下：
 <a href="https://www.codecogs.com/eqnedit.php?latex=T_x&space;=&space;\frac{(BoxCenterX&space;-&space;C_x)T_z}{F_x}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?T_x&space;=&space;\frac{(BoxCenterX&space;-&space;C_x)T_z}{F_x}" title="T_x = \frac{(BoxCenterX - C_x)T_z}{F_x}" /></a>
@@ -323,12 +323,11 @@ BoxCenterX，BoxCenterY分别指的是2D平面检测中目标的中心位置，(
 <p align="center">图8-1 哨岗流程图</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/机载模型参数评估图.png" width="80%" alt="" /></p>  
 <p align="center">图8-2 机载模型参数评估图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/修改过的网络框架.jpg" width="30%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/修改过的网络框架.jpg" width="80%" alt="" /></p>  
 <p align="center">图8-3 修改过的网络框架</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/AI_硬件框图.jpg" width="80%" alt="" /></p>  
 <p align="center">图8-4 AI_硬件框图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/使用jetson%20agx%20xavier训练模型时长.png
-" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/使用jetson%20agx%20xavier训练模型时长.png" width="80%" alt="" /></p>  
 <p align="center">图8-5 使用jetson agx xavier训练模型时长</p>  
 
 
