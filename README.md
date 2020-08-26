@@ -17,23 +17,23 @@
 
 ## **2. 软件效果展示**   
 #### **若无法加载图像，建议下载工程后到Innocent_Bird-master/images/文件夹下打开** 
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/整车.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/整车.jpg" width="80%" alt="" /></p>   
 <p align="center">整车结构图</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/场地字符识别.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/场地字符识别.jpg" width="80%" alt="" /></p>   
 <p align="center">场地字符识别</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/哨岗识别计算坐标.gif" width="80%" alt="" /></p>   
 <p align="center">哨岗识别计算坐标</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
-<p align="center">机器人及其装甲板识别</p>
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/哨岗场地分区图.jpg" width="80%" alt="" /></p>   
+<p align="center">哨岗场地分区图</p>
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
 <p align="center">tensorRT加持的yolov4-tiny测试</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/镜头划伤起雾时机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/镜头划伤起雾时机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
 <p align="center">镜头划伤起雾时机器人及其装甲板识别</p> 
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40左右</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">7.8米识别机器人装甲板model_size(512, 418) FPS30左右</p>   
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perceptionInnocent_Bird-master/images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
 <p align="center">Ros中机器人机载PC感知测试(512, 414) FPS20左右(录屏后机载电脑cpu100%)</p> 
 
 
@@ -280,17 +280,17 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 # **7. 原理介绍与理论支持分析**   
 ## 1. 哨岗识别原理与流程  
 ① 摄像头矫正得到相机参数用于OpenCV remap，得到无畸变图像   
-② 使用逆透视算法对梯形畸变进行矫正，得到了只有半个场地区域大小的俯视图   
-③ 增加保存图像功能，收集数据集并标准数据集  
-④ 改进ultralytics公司开源的yolov5框架来训练红蓝车和装甲板模型  
-⑤ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
-⑥ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
-⑦ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上实现测试）    
+② 使用逆透视算法对梯形畸变进行矫正，得到了只有半个场地区域大小的俯视图    
+③ 增加保存图像功能，收集数据集并标准数据集    
+④ 改进ultralytics公司开源的yolov5框架来训练红蓝车和装甲板模型    
+⑤ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立       
+⑥ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息     
+⑦ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上实现测试）       
 
 #### 坐标的简单计算如下所示  
 
 #### 哨岗视角建立坐标系图
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/images/哨岗场地分区.jpg" width="80%" alt="" /></p>   
 <p align="center">哨岗场地分区</p>  
 
 ```
@@ -311,24 +311,30 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法(Minimum Output Sum of SquaredError)对该视觉检测算法最合适的，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都不是很好，MOSSE在我的测试过程中保持了120帧左右的跟踪速度，精度和抗干扰性好很多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
 
 # **8. 数据流图及软件框图**  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/哨岗流程图.jpg" width="30%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/哨岗流程图.jpg" width="30%" alt="" /></p>  
 <p align="center">图8-1 哨岗流程图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/机载模型参数评估图.png" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/机载模型参数评估图.png" width="80%" alt="" /></p>  
 <p align="center">图8-2 机载模型参数评估图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/修改过的网络框架.jpg" width="30%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/修改过的网络框架.jpg" width="30%" alt="" /></p>  
 <p align="center">图8-1 修改过的网络框架</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/AI_硬件框图.jpg" width="80%" alt="" /></p>  
-<p align="center">图8-2 AI_硬件框图</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/AI_硬件框图.jpg" width="80%" alt="" /></p>  
+<p align="center">图8-4 AI_硬件框图</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Wust_perception/Innocent_Bird-master/Data_diagram_image/使用jetson agx xavier训练模型时长.png" width="80%" alt="" /></p>  
+<p align="center">图8-3 使用jetson agx xavier训练模型时长</p>  
 
 
-# **9. 解决的工程问题和创新之处** 
+
+# **9. 解决的工程问题和创新之处**   
 - [x] 解决了jetson agx xavier安装最新深度学习环境jetpack4.4和高版本下运行官方RoboRTS ROS工作空间无法显示地图和节点发布不全的问题    
 - [x] 解决了python3环境下无法直接使用CV_bridge的问题，不需要建立虚拟环境和单独编译python3专用的CV_bridge（在image_after.py和LHL_Car_Str_Detection.py中体现）   
 - [x] 对数据集中出现的未显示机器人编号但是能看到颜色特征的机器人进行了特定处理(例如机器人编号被遮挡有红色特征都归为red_car2)，减少了识别classes数目，更及时地反馈敌方机器人信息。    
 - [x] 解决了哨岗视觉机器人定位不准的问题，定位精确度高达90%以上    
-- [x] 参考yolo检测代码，编写了自己的detection文件(Innocent_Bird.py, LHL_Car_Str_Detection.py)，代码已经尽量简化明了，运行速度较原代码有所提高，能够用于ros工作空间下面运行不依靠封装良好的Darknet结构，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色，置信度低时为灰色等(哨岗和机载检测有差异)
+- [x] 参考yolo检测代码，编写了自己的detection文件(Innocent_Bird.py, LHL_Car_Str_Detection.py)，代码已经尽量简化明了，运行速度较原代码有所提高，能够用于ros工作空间下面运行不依靠封装良好的Darknet结构，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色，置信度低时为灰色等(哨岗和机载检测有差异)   
 
 ### Reference   
-https://docs.opencv.org/master/d9/df8/tutorial_root.html    
+https://github.com/AlexeyAB/darknet   
 https://github.com/ultralytics/yolov5   
+https://developer.nvidia.com/embedded/jetpack   
+https://docs.opencv.org/master/d9/df8/tutorial_root.html      
+ 
 
