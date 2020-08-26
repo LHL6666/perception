@@ -2,8 +2,8 @@
 ## **1. 软件功能介绍**  
 哨岗感知功能实现了敌我机器人识别、敌方机器人装甲板识别、敌方机器人位置坐标识别；机器人感知部分实现了在ROS空间里通过自定义图像类型进行发布和订阅解码，进行图像检测并发布红蓝方及其装甲板置信度最高的机器人位置坐标，也同样实现了敌我机器人识别，装甲板类型识别，姿态识别，障碍物编号识别等功能。
 #### **机器人和装甲板识别算法框架：**    
-使用了深度学习目标检测算法：一共尝试了**yolov4, yolov4-tiny, "ultralytics yolov5", AlexeyAB发行的tensorRT加速版yolov4-tiny**框架，其中tensorRT加持的yolov4-tiny算法在我们的机载PC（仅为ARM处理器）上识别速度能够高达近乎150帧，能够在三米内稳定识别装甲板和尾灯，7米之内稳定识别机器人（有一定的防遮挡能力），但是由于对装甲板的识别距离太近，限制了日后决策组发展，因此最后采取折中的方案，最终在哨岗视觉和机器人视觉处理上使用了来自ultralytics公司的"yolov5"框架，该框架在调节模型大小和优化器等参数后取得较好的效果，能够在6米内稳定识别装甲板和尾灯，识别机器人的准确度也很高 
-主要功能对比如下（以最后模型为准）：   
+使用了深度学习目标检测算法：一共尝试了**yolov4, yolov4-tiny, "ultralytics yolov5", AlexeyAB发行的tensorRT加速版yolov4-tiny**框架，其中tensorRT加持的yolov4-tiny算法在我们的机载PC（仅为ARM处理器）上识别速度能够高达近乎150帧，能够在三米内稳定识别装甲板和尾灯，7米之内稳定识别机器人（有一定的防遮挡能力），但是由于对装甲板的识别距离太近，限制了日后决策组发展，因此最后采取折中的方案，最终在哨岗视觉和机器人视觉处理上使用了来自ultralytics公司的"yolov5"框架，该框架在调节模型大小和优化器等参数后取得较好的效果，能够在6米内稳定识别装甲板和尾灯，识别机器人的准确度也很高。  
+使用机载PC测试结果如下（以最后模型为准）：   
 
 |                |ultralytics yolov5 |AlexeyAB版 yolov4-tiny                        |
 |----------------|-------------------------------|-----------------------------|
@@ -22,12 +22,15 @@
 <p align="center">机器人及其装甲板识别</p>
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
 <p align="center">tensorRT加持的yolov4-tiny测试</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
-<p align="center">Ros中机器人机载PC感知测试(512, 414) FPS22左右(由于录屏后机载电脑cpu100%)</p> 
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/镜头划伤起雾时机器人及其装甲板识别.gif" width="80%" alt="" /></p>   
+<p align="center">镜头划伤起雾时机器人及其装甲板识别</p> 
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40左右</p>   
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">7.8米识别机器人装甲板model_size(512, 418) FPS30左右</p>   
+<p align="center"><img style="display: block; margin: 0 auto;" src="images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
+<p align="center">Ros中机器人机载PC感知测试(512, 414) FPS20左右(录屏后机载电脑cpu100%)</p> 
+
 
 ## **3. 依赖工具，软、硬件环境**
 #### **软件部分：**   
@@ -278,15 +281,18 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 ⑤ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
 ⑥ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
 ⑦ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上实现测试）   
-
+```
+adjust_r = field_y1 / field_y0
+car_y = ((ref_point[1] - Car_Center[1]) / ref_point[1]) * field_y0 * adjust_r
+car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_r
+```
 ## 2. 机器人姿态估计  
-由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只做了识别机器人尾灯的
+由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，根据麦轮来解算得出姿态信息可信度很低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑配色不能简单通过深度学习来识别区分大部分机器人姿态。因此针对AI机器人姿态检测的困难性，这里分享一下我的想法：  
+这里已知尾灯是最可信的姿态特征，云台的可转角度并不能达到±90°
   
 
 ### 3. 机器人运动预测
-初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法(Minimum Output Sum of SquaredError)对该视觉检测算法最合适的，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，
-KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都不是很好，MOSSE在我的测试过程中保持了120帧左右的跟踪速度，精度和抗干扰性好很
-多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
+初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法(Minimum Output Sum of SquaredError)对该视觉检测算法最合适的，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都不是很好，MOSSE在我的测试过程中保持了120帧左右的跟踪速度，精度和抗干扰性好很多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
 
 # **8. 数据流图及软件框图**  
 <p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/哨岗流程图.jpg" width="30%" alt="" /></p>  
@@ -300,7 +306,7 @@ KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都�
 - [x] 解决了python3环境下无法直接使用CV_bridge的问题，不需要建立虚拟环境和单独编译python3专用的CV_bridge（在image_after.py和LHL_Car_Str_Detection.py中体现）   
 - [x] 对数据集中出现的未显示机器人编号但是能看到颜色特征的机器人进行了特定处理，减少了识别classes数目，更及时地反馈敌方机器人信息。    
 - [x] 解决了哨岗视觉机器人定位不准的问题，定位精确度高达90%以上    
-- [x] 参考yolo检测代码，编写了自己的detection文件(Innocent_Bird.py, LHL_Car_Str_Detection.py)，代码已经尽量简化明了，运行速度较原代码有所提高，能够用于ros工作空间下面运行不依靠封装良好的Darknet结构，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色，置信度低时灰色等(哨岗和机载检测有差异)
+- [x] 参考yolo检测代码，编写了自己的detection文件(Innocent_Bird.py, LHL_Car_Str_Detection.py)，代码已经尽量简化明了，运行速度较原代码有所提高，能够用于ros工作空间下面运行不依靠封装良好的Darknet结构，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色，置信度低时为灰色等(哨岗和机载检测有差异)
 
 ### Reference   
 https://docs.opencv.org/master/d9/df8/tutorial_root.html    
