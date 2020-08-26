@@ -319,14 +319,18 @@ BoxCenterX，BoxCenterY分别指的是2D平面检测中目标的中心位置，(
 
 # **8. 数据流图及软件框图**  
 ##### 若无法加载图像，建议下载工程后到/Innocent_Bird-master/Data_diagram_image/文件夹下打开
-<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/哨岗流程图.jpg" width="80%" alt="" /></p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/哨岗流程图.jpg" width="60%" alt="" /></p>  
 <p align="center">图8-1 哨岗流程图</p>  
+
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/机载模型参数评估图.png" width="80%" alt="" /></p>  
 <p align="center">图8-2 机载模型参数评估图</p>  
+
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/修改过的网络框架.jpg" width="80%" alt="" /></p>  
 <p align="center">图8-3 修改过的网络框架</p>  
+
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/AI_硬件框图.jpg" width="80%" alt="" /></p>  
 <p align="center">图8-4 AI_硬件框图</p>  
+
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/使用jetson%20agx%20xavier训练模型时长.png" width="80%" alt="" /></p>  
 <p align="center">图8-5 使用jetson agx xavier训练模型时长</p>  
 
