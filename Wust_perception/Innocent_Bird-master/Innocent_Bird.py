@@ -1,7 +1,7 @@
 #  CopyRight @LHL 2020.08.13
 #  Based on yolov5 model, PyTorch
 #  Tested on mi pro , i7-8550U@1.8GHz, MX150-2G, RAM 8.0G
-#  Inference FPS:50 ~ 100, auto exposure, inference time: 0.01 ~ 0.024 s
+#  Inference FPS:40 ~ 100, auto exposure, inference time: 0.01 ~ 0.024 s
 
 import torch.backends.cudnn as cudnn
 from models.experimental import *
