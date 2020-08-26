@@ -65,7 +65,7 @@ matplotlib>=3.2.2
 torchvision>=0.7.0      
 OpenCV-python>=4.1.2 
 
-数据集采集：labelimg  
+数据集标注软件：labelimg  
 
 #### **硬件部分：**   
 机载平台： Jetson AGX Xavier  
@@ -122,6 +122,7 @@ Innocent_Bird-master.
 ├── train.py // 训练用的文件
 └── requirements.txt // 环境依赖说明
 ```
+
 
 ```
 .
@@ -225,7 +226,6 @@ Model Summary: 191 layers, 7.27667e+06 parameters, 7.27667e+06 gradients
  27      [17, 20, 23]  1     21630  Detect                                  [9, [[10, 13, 16, 30, 33, 23], [30, 61, 62, 45, 59, 119], [116, 90, 156, 198, 373, 326]], [128, 128, 256]]
 Reversing anchor order
 Model Summary: 197 layers, 7.46739e+06 parameters, 7.46739e+06 gradients
-
 ```
 
 ## 数据集  
@@ -297,7 +297,7 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 ```
 
 ## 2. 机器人姿态估计  
-  由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，根据麦轮来解算得出姿态信息可信度很低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑配色不能简单通过深度学习来识别区分大部分机器人姿态。因此针对AI机器人姿态检测的困难性，这里分享一下我的想法：  
+  由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，根据麦轮来解算得出姿态信息可信度很低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑的配色让我们不能简单通过深度学习来识别区分大部分机器人姿态。因此针对AI机器人姿态检测的困难性，这里分享一下我的想法：  
 这里已知尾灯是最可信的姿态特征，云台的可转角度并不能达到±90°
   
 
@@ -311,8 +311,8 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 <p align="center">图8-2 机载模型参数评估图</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/修改过的网络框架.jpg" width="30%" alt="" /></p>  
 <p align="center">图8-1 修改过的网络框架</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/机载模型参数评估图.png" width="80%" alt="" /></p>  
-<p align="center">图8-2 机载模型参数评估图</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/AI_硬件框图.jpg" width="80%" alt="" /></p>  
+<p align="center">图8-2 AI_硬件框图</p>  
 
 
 # **9. 解决的工程问题和创新之处** 
