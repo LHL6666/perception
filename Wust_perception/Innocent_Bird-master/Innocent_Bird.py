@@ -27,9 +27,10 @@ FPS = 0.0
 car_x = 0
 car_y = 0
 
+# the size field, see in the readme
 field_x = 254
 field_y0 = 340
-field_y1 = 366
+field_y1 = 354
 
 # Camera source
 Use_Camera = 1
