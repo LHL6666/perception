@@ -65,7 +65,7 @@ distortion = np.array([[-0.3820, 0.1374, 0., 0., 0.]])
 
 
 # When running on windows,add the cv2.CAP_DSHOW param
-capture = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 # Set the frame size
 capture.set(3, 1280)
@@ -224,13 +224,17 @@ def detect(Bird_img):
                         Car_Center = ((pst1[0]+pst2[0])/2, (pst1[1]+pst2[1])/2)
 
                         # *****************************mainly***************************
-                        # x=254cm, y0=340cm, y1=354cm
+                        # 场地半宽x=254cm, y0=340cm, y1=354cm  ，得出的car_x, car_y为该种坐标系下实际的1:1坐标
                         if ref_flag == 0:
+                            # adjust_r为调整系数，field_y1为y1(逆透视图中图像底部到参考点对应的实际场地垂直距离), field_y0即指y0(逆透视图中由参考点到图像顶部对应的实际场地垂直距离)
                             adjust_r = field_y1 / field_y0
+                            # Car_Center[1]指逆透视图中机器人在height方向上的位置，Car_Center[0]指逆透视图中机器人在width方向上的位置 
                             if Car_Center[1] < ref_point[1]:
+                                # y0那边的区域
                                 car_y = ((ref_point[1] - Car_Center[1]) / ref_point[1]) * field_y0 * adjust_r
                                 car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_r
                             elif Car_Center[1] > ref_point[1]:
+                                # y1这边的区域
                                 car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_r
                                 car_y = ((Car_Center[1] - ref_point[1]) / (Bird_img.shape[0] - ref_point[1])) * (-field_y1) * adjust_r
 
