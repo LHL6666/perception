@@ -32,7 +32,7 @@
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
 <p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40左右</p>   
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
-<p align="center">7.8米识别机器人装甲板model_size(512, 418) FPS30左右</p>   
+<p align="center">极限场地7.8米识别机器人装甲板model_size(512, 418) FPS30左右</p>   
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/images/Ros中机器人感知测试.gif" width="80%" alt="" /></p>   
 <p align="center">Ros中机器人机载PC感知测试(512, 414) FPS20左右(录屏后机载电脑cpu100%)</p> 
 
@@ -303,7 +303,9 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 ```
 
 ## 2. 机器人姿态估计  
-  由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，麦轮已经被遮挡了一半，仅仅根据麦轮来解算得出姿态信息可信度大大降低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑的配色让我们不能简单通过深度学习来识别区分大部分机器人姿态。因此针对AI机器人姿态检测的困难性
+  由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，麦轮已经被遮挡了一半，仅仅根据麦轮来解算得出姿态信息可信度大大降低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑的配色让我们不能简单通过深度学习来识别区分大部分机器人姿态。不过，我们也对下一步的方向有了初步规划。  
+  目前主流的目标检测大部分以多目标检测为主，6D姿态估计的方法也是涉及多目标检测的，并且同样也是基于平面2D图像来进行预测的，不同的是6D姿态估计预测的是xyzuvw，包括了平移和旋转，一定程度上来说6D姿态检测就是特殊的2D目标检测，因此我们可以基于目标检测框架来进行姿态估计。由立体视觉知识可知，3D物体空间姿态可以用旋转矩阵R和平移矩阵T来表示，旋转矩阵R需要满足单位正交的条件，直接用于网络训练的话很难收敛到这种正交限制，因此有必要使用其它能代表这个旋转矩阵的参数来进行简化它。比较容易想到用四元数或欧拉角来表示旋转矩阵R的旋转，但是由于四元数要求这个四维向量必须是一个单位向量，而欧拉角具有周期性，同一个角度的表示有无数种方法，因此这两种方式都不容易使网络回归收敛。  
+  既然直接使用旋转矩阵来进行网络回归太困难，那么我们可以考虑将其“拆解”，假设存在一个三维向量，其方向与旋转轴重合，使用它的模的大小来表示旋转的正角度，使用这个三维向量来代替旋转矩阵R，就能够削弱网络收敛结果限制；但是找到了怎么表示旋转的方法，还要处理xyz的平移。有坐标转换的思想可知
   
 
 ### 3. 机器人运动预测
