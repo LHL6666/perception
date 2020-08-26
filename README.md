@@ -162,10 +162,10 @@ Innocent_Bird-master.
 # **6. 软件使用说明** 
 ## ***A. 深度学习目标检测算法框架修改***   
 修改的网络: ultralytics团队的"yolov5"框架   
-  yolov5s的网络结构和yolov4是基本相同的，网络结构每一层的输入都是上一层的输出，所以为了方便使用者修改网络结构，就提取出了depth_multiple和width_multiple两个参数，这两个参数和网络层结构配置被放在models/yolov5s.yaml文件中，只需要修改depth_multiple和width_multiple参数即可修改网络模型的结构。其中depth_multiple深度神经因子参数调节的是非功能层(对conv,spp,Focus等层不起作用)，如瓶颈层BottleneckCSP，它控制的是神经网络的深度，width_multiple参数修改了卷积层数，width_multiple=0.5即指卷积层数目减少到原来默认值的一半。对于骨干网络backbone，下采样使得特征图从大到小，深度逐渐加深，对于头部结构head，可以看到头部层升维再降维变化，ultralytics团队更新代码后采用了PN Net结构。  
+  yolov5s的网络结构和yolov4是基本相同的，网络结构每一层的输入都是上一层的输出，所以为了方便使用者修改网络结构，就提取出了depth_multiple和width_multiple两个参数，这两个参数和网络层结构配置被放在models/yolov5s.yaml文件中，只需要修改depth_multiple和width_multiple参数即可修改网络模型的结构。其中depth_multiple深度神经因子参数调节的是非功能层(对conv,spp,Focus等层不起作用)，如瓶颈层BottleneckCSP，它控制的是神经网络的深度，width_multiple参数修改了卷积层数，width_multiple=0.5即指卷积层数目减少到原来默认值的一半。对于骨干网络backbone，下采样使得特征图从大到小，深度逐渐加深，对于头部结构head，可以看到head层升维再降维变化，ultralytics团队更新代码后采用了PN Net结构。  
   分析推测：   
 ① 增加一层先验框anchors为[5,6, 7,9, 12,10]，应该能够更准确地检测小物体    
-② 调整yolov5s.yaml参数number的个数应该能调出更好的模型，甚至使得BottleneckCSP层中再包含多个BottleneckCSP层，但是模型可能更大推理速度变慢    
+② 调整yolov5s.yaml参数number的个数应该能调出更好的模型，甚至使得BottleneckCSP层中再包含多个BottleneckCSP层，但是模型可能更大导致推理速度变慢    
 ③ 在上采样瓶颈层处理后尝试增加SELayer层对上一层的特征图深度进行加权处理，对于检测类型的任务应该能够加快收敛，训练速度和检测精度都应该有所提升   
   最后，我尝试了增加anchors和SELayer层，anchors在修改之后在我们场地测试时发现对远处的装甲板确实能够标记的更准确了，但是误判率却又有所增加，所以yolov5s.yaml中我将新增的anchors注释了，后面才了解到yolov5中先验框的大小会在训练过程自动调节，已经适配地相当优秀了。SELayer的实现原理是先做平均赤化和线性分类，然后使用relu激活函数约束后再次线性分类，最后加上Sigmoid处理。  
 
@@ -284,7 +284,7 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 ③ 增加保存图像功能，收集数据集并标准数据集    
 ④ 改进ultralytics公司开源的yolov5框架来训练红蓝车和装甲板模型    
 ⑤ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立       
-⑥ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息     
+⑥ 根据比赛场地的长宽信息和鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息     
 ⑦ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上实现测试）       
 
 #### 坐标的简单计算如下所示    
@@ -305,7 +305,7 @@ car_x = ((Car_Center[0] - ref_point[0]) / Bird_img.shape[1]) * field_x * adjust_
 ## 2. 机器人姿态估计  
   由于武汉批准返校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只靠识别机器人尾灯和装甲板的分布来推测姿态信息，AI机器人的防护做得比较好，麦轮已经被遮挡了一半，仅仅根据麦轮来解算得出姿态信息可信度大大降低，而且每台AI机器人上面的器件摆放位置以及样式多少都会有差异，机器人全黑的配色让我们不能简单通过深度学习来识别区分大部分机器人姿态。不过，我们也对下一步的方向有了初步规划。  
   目前主流的目标检测大部分以多目标检测为主，6D姿态估计的方法也是涉及多目标检测的，并且同样也是基于平面2D图像来进行预测的，不同的是6D姿态估计预测的是xyzuvw，包括了平移和旋转，一定程度上来说6D姿态检测就是特殊的2D目标检测，因此我们可以基于目标检测框架来进行姿态估计。由立体视觉知识可知，3D物体空间姿态可以用旋转矩阵R和平移矩阵T来表示，旋转矩阵R需要满足单位正交的条件，直接用于网络训练的话很难收敛到这种正交限制，因此有必要使用其它能代表这个旋转矩阵的参数来进行简化它。比较容易想到用四元数或欧拉角来表示旋转矩阵R的旋转，但是由于四元数要求这个四维向量必须是一个单位向量，而欧拉角具有周期性，同一个角度的表示有无数种方法，因此这两种方式都不容易使网络回归收敛。  
-  既然直接使用旋转矩阵来进行网络回归太困难，那么我们可以考虑将其“拆解”，假设存在一个三维向量，其方向与旋转轴重合，使用它的模的大小来表示旋转的正角度，使用这个三维向量来代替旋转矩阵R，就能够削弱网络收敛结果限制；但是找到了怎么表示旋转的方法，还要处理xyz的平移。由坐标转换的思想可知只要将从2D平面检测到的目标中心点转换到相机坐标系xy中即可很好地解决该问题。训练目标明确后，就可以借助2D目标检测框架来设计训练模型了，与2D目标检测的模型架构不同的是新增加了一个姿态预测的分支。
+  既然直接使用旋转矩阵来进行网络回归太困难，那么我们可以考虑将其“拆解”，假设存在一个三维向量，其方向与旋转轴重合，使用它的模的大小来表示旋转的正角度，使用这个三维向量来代替旋转矩阵R，就能够削弱网络收敛结果限制；但是找到了怎么表示旋转的方式，还要处理xyz的平移。由坐标转换的思想可知只要将从2D平面检测到的目标中心点转换到相机坐标系xy中即可很好地解决该问题。训练目标明确后，就可以借助2D目标检测框架来设计训练模型了，与2D目标检测的模型架构不同的是新增加了一个姿态预测的分支。
 #### 坐标的转换如下：
 <a href="https://www.codecogs.com/eqnedit.php?latex=T_x&space;=&space;\frac{(BoxCenterX&space;-&space;C_x)T_z}{F_x}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?T_x&space;=&space;\frac{(BoxCenterX&space;-&space;C_x)T_z}{F_x}" title="T_x = \frac{(BoxCenterX - C_x)T_z}{F_x}" /></a>
 
@@ -315,7 +315,7 @@ BoxCenterX，BoxCenterY分别指的是2D平面检测中目标的中心位置，(
 
 
 ### 3. 机器人运动预测
-初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法(Minimum Output Sum of SquaredError)对该视觉检测算法最合适的，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都不是很好，MOSSE在我的测试过程中保持了120帧左右的跟踪速度，精度和抗干扰性好很多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
+初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法(Minimum Output Sum of SquaredError)在比赛环境下对机器人检测最为合适，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都不是很好，MOSSE在我的测试过程中保持了120帧左右的跟踪速度，精度和抗干扰性好很多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
 
 # **8. 数据流图及软件框图**  
 ##### 若无法加载图像，建议下载工程后到/Innocent_Bird-master/Data_diagram_image/文件夹下打开
@@ -324,12 +324,12 @@ BoxCenterX，BoxCenterY分别指的是2D平面检测中目标的中心位置，(
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/机载模型参数评估图.png" width="80%" alt="" /></p>  
 <p align="center">图8-2 机载模型参数评估图</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/修改过的网络框架.jpg" width="30%" alt="" /></p>  
-<p align="center">图8-1 修改过的网络框架</p>  
+<p align="center">图8-3 修改过的网络框架</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/AI_硬件框图.jpg" width="80%" alt="" /></p>  
 <p align="center">图8-4 AI_硬件框图</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="https://github.com/LHL6666/perception/blob/master/Wust_perception/Innocent_Bird-master/Data_diagram_image/使用jetson%20agx%20xavier训练模型时长.png
 " width="80%" alt="" /></p>  
-<p align="center">图8-3 使用jetson agx xavier训练模型时长</p>  
+<p align="center">图8-5 使用jetson agx xavier训练模型时长</p>  
 
 
 
@@ -338,7 +338,7 @@ BoxCenterX，BoxCenterY分别指的是2D平面检测中目标的中心位置，(
 - [x] 解决了python3环境下无法直接使用CV_bridge的问题，不需要建立虚拟环境和单独编译python3专用的CV_bridge（在image_after.py和LHL_Car_Str_Detection.py中体现）   
 - [x] 对数据集中出现的未显示机器人编号但是能看到颜色特征的机器人进行了特定处理(例如机器人编号被遮挡有红色特征都归为red_car2)，减少了识别classes数目，更及时地反馈敌方机器人信息。    
 - [x] 解决了哨岗视觉机器人定位不准的问题，定位精确度高达90%以上    
-- [x] 参考yolo检测代码，编写了自己的detection文件(Innocent_Bird.py, LHL_Car_Str_Detection.py)，代码已经尽量简化明了，运行速度较原代码有所提高，能够用于ros工作空间下面运行不依靠封装良好的Darknet结构，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色，置信度低时为灰色等(哨岗和机载检测有差异)   
+- [x] 参考yolo检测代码，编写了自己的detection文件(Innocent_Bird.py, LHL_Car_Str_Detection.py)，代码已经尽量简化明了，运行速度较原代码有所提高，能够用于ros工作空间下面运行不依靠封装良好的Darknet结构，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色，置信度低时为灰黑色等(哨岗和机载检测有差异)   
 
 ### Reference   
 https://github.com/AlexeyAB/darknet   
