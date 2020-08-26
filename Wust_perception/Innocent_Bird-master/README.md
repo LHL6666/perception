@@ -23,12 +23,12 @@
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/tensorRT加持的yolov4-tiny测试.gif" width="80%" alt="" /></p>   
 <p align="center">tensorRT加持的yolov4-tiny测试</p>  
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/5.6米识别机器人装甲板.gif" width="80%" alt="" /></p>   
-<p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40</p>   
+<p align="center">5.6米识别机器人装甲板model_size(448, 256) FPS40左右</p>   
 <p align="center"><img style="display: block; margin: 0 auto;" src="images/7.8米识别机器人装甲板.gif" width="80%" alt="" /></p>   
-<p align="center">7.8米识别机器人装甲板model_size(512, 418) FPS30</p>   
+<p align="center">7.8米识别机器人装甲板model_size(512, 418) FPS30左右</p>   
 
 ## **3. 依赖工具，软、硬件环境**
-####**软件部分：**   
+#### **软件部分：**   
 
 系统版本：Ubuntu18.04    
 
@@ -62,7 +62,7 @@ torchvision>=0.7.0
 OpenCV-python>=4.1.2 
 
 
-####**硬件部分：**   
+#### **硬件部分：**   
 机载平台： Jetson AGX Xavier  
 哨岗电脑： 小米Pro  Intel i7-8550U @1.8G + GeForce MX150      
 单目摄像头：威鑫视界WX605摄像头，镜头150°，焦距2.45mm，分辨率1280*720，帧率 120   
@@ -104,16 +104,16 @@ Innocent_Bird-master.
 │   └── yolo.py  //模型文件，包含了用来解析输入的yolov5s.yaml参数网络的功能
 │
 ├── utils
-│   ├── activations.py
-│   ├── datasets.py
-│   ├── googles_utils.py
-│   ├── torch_utils.py
-│   └── utils.py
+│   ├── activations.py //激活函数文件，里面分成Swish激活函数实现和Mish激活函数实现
+│   ├── datasets.py // 数据集文件，包括训练测试时加载数据集进行处理以及加载(多)图片和(多)视频流用于识别检测
+│   ├── googles_utils.py // 这个文件包含了google utils功能，在没有发现本地模型的时候自动到google下载，下载谷歌驱动等功能
+│   ├── torch_utils.py // torch的utils功能，如time_synchronized获取cuda可用时同步时间，选择gpu/cpu设备，绘制逐行描述一个PyTorch模型等功能
+│   └── utils.py // 相当于脚本文件，包含了检查文件是否存在，计算平均精度，检查图像size与模型是否匹配等功能
 │ 
 ├── Camera_Calibration.py // 矫正畸变后的图像，用来收集数据集使用
 ├── Convert_xml_to_txt.py // voc数据集转yolo数据集
 ├── Innocent_Bird.py // 哨岗检测文件
-├── test.py // 
+├── test.py // 大部分与train.py功能相同，该部分主要用于运行train时，计算每个epoch的mAP。
 ├── train.py // 训练用的文件
 └── requirements.txt // 环境依赖说明
 ```
@@ -197,7 +197,7 @@ Model Summary: 197 layers, 7.46739e+06 parameters, 7.46739e+06 gradients
 ## 数据集  
 yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo格式的标签，不过在该工程中提供了voc转yolo格式的Convert_xml_to_txt.py文件。
 ① 哨岗搭载的模型训练用的数据集一共250张左右，其中验证数据集50左右，在小米笔记本pro上(MX150入门显卡)200epochs, batch_size 16, train_size和test_size为256时训练时间仅仅为0.65个小时，mAP@0.5接近1，可在下面链接下载数据集  
-② 机器人搭载的模型训练用的数据集一共1000张左右，其中包含了验证数据集200张左右，在小米笔记本pro上300 epochs, batch_size 8, train_size和test_size为480时训练时间6.8个小时左右，在jetson agx xavier上 300 epochs, batch_size 128, train_size和test_size为480时训练时间仅仅为2.7个小时左右， 由于该数据集比较大，不好上传暂不开源。（实际结果可能会有偏差，非严格测试）  
+② 机器人搭载的模型训练用的数据集一共1000张左右，其中包含了验证数据集200张左右，在小米笔记本pro上300 epochs, batch_size 8, train_size和test_size为480时训练时间6个小时左右，在jetson agx xavier上 300 epochs, batch_size 128, train_size和test_size为480时训练时间仅仅为2个小时左右， 由于该数据集比较大，不好上传暂不开源。（实际结果可能会有偏差，非严格测试）  
 ③ 训练数据集文件结构：  
 ```
 .
@@ -240,34 +240,35 @@ yolov4-tiny使用的是voc格式的标签，ultralytics yolov5使用的是yolo�
 ## 1. 哨岗识别原理与流程  
 
 
-- [x] 改进ultralytics公司开源的yolov5算法训练模型来识别红蓝车和装甲板    
-- [x] 使用逆透视算法对梯形畸变进行矫正，得到了只有半个场地区域大小的俯视图    
-- [x] 编写矫正和标定函数，根据环境来设定并校准场地，得到场地中心点和一半的场地图像       
-- [x] 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
-- [x] 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
-- [x] 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上测试）   
+① 改进ultralytics公司开源的yolov5框架训练模型来识别红蓝车和装甲板    
+② 使用逆透视算法对梯形畸变进行矫正，得到了只有半个场地区域大小的俯视图    
+③ 编写矫正和标定函数，根据环境来设定并校准场地，得到场地中心点和一半的场地图像       
+④ 使用训练好的模型对半场地图像进行检测识别，两个哨岗摄像头分别负责一半场地，互相独立     
+⑤ 根据比赛场地的长宽信息，鸟瞰图中机器人的相对坐标，由比例关系可以计算得到实际的坐标信息   
+⑥ 将识别到的敌方机器人位置及其装甲板位置信息（置信度最高的）发布到innocent_msg消息中，（由于只有一台机器人，暂时未在移动PC上测试）   
 
 ## 2. 机器人姿态估计  
+由于回校时间太短太短，加上第一次参赛经验不足，因此姿态检测方面只做了识别机器人尾灯
   
 
 ### 3. 机器人运动预测
-初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法对该哨岗视觉算法最合适的，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，
+初步测试了KCF、MOSSE和CSRT等传统跟踪算法，发现MOSSE算法(Minimum Output Sum of SquaredError)对该视觉检测算法最合适的，在机器人被遮挡大部分时仍能够正常跟踪不容易丢失目标，
 KCF虽然能够达到300多帧的跟踪速度，但是精度和抗干扰性都不是很好，MOSSE在我的测试过程中保持了120帧左右的跟踪速度，精度和抗干扰性好很
 多。但是由于第一届参加比赛还没有得到固定场地，还没录视频就被迫更换场地，没法固定哨岗相机不满足测试条件了
 
 # **8. 数据流图及软件框图**  
-<p align="center"><img style="display: block; margin: 0 auto;" src="My_PIC/软件框图.png" width="30%" alt="" /></p>  
-<p align="center">图8-1 软件框图</p>  
-<p align="center"><img style="display: block; margin: 0 auto;" src="My_PIC/总框图.png" width="80%" alt="" /></p>  
-<p align="center">图8-2 总数据流框图</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/哨岗流程图.jpg" width="30%" alt="" /></p>  
+<p align="center">图8-1 哨岗流程图</p>  
+<p align="center"><img style="display: block; margin: 0 auto;" src="Data_diagram/机载模型参数评估图.png" width="80%" alt="" /></p>  
+<p align="center">图8-2 机载模型参数评估图</p>  
 
 
 # **8. 解决的工程问题和创新之处** 
-① 解决了jetson agx xavier安装最新深度学习环境和高版本下运行官方RoboRTS ROS工作空间无法显示地图和节点发布不全的问题    
-② 解决了python3环境下无法直接使用CV_bridge的问题，不需要建立虚拟环境和单独编译python3专用的CV_bridge   
-③ 对数据集中出现的未显示机器人编号但是能看到颜色特征的机器人进行了特定处理，减少了识别classes数目，更及时地反馈敌方机器人信息。    
-④ 解决了哨岗视觉机器人定位不准的问题，定位精确度高达90%以上    
-⑤ 参考yolo检测代码，编写了自己的detection文件，例如LHL_Car_Str_Detection.py，代码已经尽量简化明了，运行速度较原代码有所提高，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色
+- [x] 解决了jetson agx xavier安装最新深度学习环境和高版本下运行官方RoboRTS ROS工作空间无法显示地图和节点发布不全的问题    
+- [x] 解决了python3环境下无法直接使用CV_bridge的问题，不需要建立虚拟环境和单独编译python3专用的CV_bridge   
+- [x] 对数据集中出现的未显示机器人编号但是能看到颜色特征的机器人进行了特定处理，减少了识别classes数目，更及时地反馈敌方机器人信息。    
+- [x] 解决了哨岗视觉机器人定位不准的问题，定位精确度高达90%以上    
+- [x] 参考yolo检测代码，编写了自己的detection文件(Innocent_Bird.py, LHL_Car_Str_Detection.py)，代码已经尽量简化明了，运行速度较原代码有所提高，能够用于ros工作空间下面运行不依靠封装良好的Darknet结构，并且对红蓝车和装甲板尾灯都指定了特定的可视化标记，例如红方机器人方框颜色为红色，装甲板2号为天蓝色，置信度低时灰色等(哨岗和机载检测有差异)
 
 ### Reference   
 https://docs.opencv.org/master/d9/df8/tutorial_root.html    
